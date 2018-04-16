@@ -30,10 +30,14 @@ junitPlatform {
     }
 }
 
+sourceSets {
+    main.kotlin.srcDirs = ['src/main']
+    test.kotlin.srcDirs = ['src/test']
+}
+
 mainClassName = 'MainKt'
 
 sourceCompatibility = 1.8
-
 
 shadowJar {
     baseName = 'betpool'
@@ -55,7 +59,6 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile "ch.qos.logback:logback-classic:1.2.1"
 
     testCompile "org.koin:koin-spek:$koin_version"
