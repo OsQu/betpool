@@ -2,7 +2,7 @@ import org.jooby.Jooby.*
 import org.jooby.Kooby
 
 class App : Kooby({
-    get {
+    get("test") {
         val name = param("name").value("Kotlin")
         "Hello $name!"
     }
