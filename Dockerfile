@@ -5,4 +5,4 @@ ADD build/libs/betpool.jar /app/betpool.jar
 EXPOSE 8080
 
 WORKDIR /app
-CMD ["java", "-jar", "betpool.jar", "prod"]
+ENTRYPOINT ["java", "-jar", "betpool.jar"]
