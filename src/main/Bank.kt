@@ -1,0 +1,1 @@
+class Bank(var players: List<String>)
