@@ -15,11 +15,20 @@ class WinningsSpec : Spek({
         winnings.getData() shouldEqual mapOf("testId" to 0)
     }
 
-    it("mergeWinnings adds winnings") {
-        var winnings = Winnings()
-        var newWinnings = Winnings(HashMap(mapOf("p1" to 1, "p2" to -1)))
-        winnings.merge(newWinnings)
-        winnings.getData() shouldEqual mapOf("p1" to 1, "p2" to -1)
+    it("mergeWinnings returns new winnings") {
+        val firstWinnings = Winnings(HashMap(mapOf("p1" to 1, "p2" to -1)))
+        val secondWinnings = Winnings(HashMap(mapOf("p1" to 1, "p2" to -1)))
+        val newWinnings = firstWinnings.merge(secondWinnings)
+        newWinnings.getData() shouldEqual mapOf("p1" to 2, "p2" to -2)
+    }
+
+    it("mergeWinnings returns doesnt mutate winnings") {
+        val data = HashMap(mapOf("p1" to 1, "p2" to -1))
+        val firstWinnings = Winnings(data)
+        val secondWinnings = Winnings(data)
+        firstWinnings.merge(secondWinnings)
+        firstWinnings.getData() shouldEqual data
+        secondWinnings.getData() shouldEqual data
     }
 
     it("is impossible to create a Winning where sum of values is not zero") {

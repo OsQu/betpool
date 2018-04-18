@@ -1,6 +1,6 @@
-class Match(val player1: String, val player2: String, var bank: Bank) {
+class Match(val athlete1Name: String, val athlete2Name: String, var pool: Set<String> = setOf()) {
 
     override fun toString(): String {
-        return "$player1 - $player2"
+        return "$athlete1Name - $athlete2Name"
     }
 }

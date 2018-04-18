@@ -9,12 +9,12 @@ class Winnings(private var data: HashMap<String, Int> = HashMap()) {
        data[playerId] = 0
     }
 
-    fun merge(winnings: Winnings) {
+    fun merge(winnings: Winnings): Winnings {
         val newData = HashMap(data)
         for ((key, value) in winnings.getData()) {
             newData[key] = data.getOrDefault(key, 0) + value
         }
-        data = newData
+        return Winnings(newData)
     }
 
     fun getData(): Map<String, Int> {

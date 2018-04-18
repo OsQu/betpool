@@ -4,7 +4,7 @@ import org.jetbrains.spek.api.dsl.it
 
 class MatchSpec : Spek({
     it("toString returns the player names") {
-        var match = Match("Ronnie", "Selby", Bank(listOf()))
+        var match = Match("Ronnie", "Selby")
         match.toString() shouldEqual "Ronnie - Selby"
     }
 })

@@ -1,2 +1,1 @@
-class Bet(val match: Match) {
-}
+class Bet(val match: Match, val playerId: String) {}
