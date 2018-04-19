@@ -1,5 +1,6 @@
 import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldContainAll
+import org.amshove.kluent.shouldThrow
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.it
 import java.util.Date

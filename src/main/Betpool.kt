@@ -23,6 +23,16 @@ object Betpool {
         }
     }
 
+    fun applyAction(action: Action.Bet) {
+        if (!matches.containsKey(action.matchId)) {
+            throw IllegalArgumentException("matchId doesn't exist")
+        } else if (!currentPlayers.contains(action.playerId)) {
+            throw IllegalArgumentException("Player must be in the current pool in order to bet")
+        } else {
+            matches[action.matchId]?.addBet(action.playerId, action.athleteNo)
+        }
+    }
+
     fun getMatches(): Map<String, Match> {
         return matches.toMap()
     }

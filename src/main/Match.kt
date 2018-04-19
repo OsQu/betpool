@@ -1,11 +1,20 @@
 import java.util.*
+import kotlin.collections.HashMap
 
 class Match(val matchId: String, val athlete1Name: String, val athlete2Name: String, val startDate: Date) {
     private var pool: Set<String>? = null
-
+    private var bets: HashMap<String, Int> = HashMap(mapOf())
 
     fun getPool(): Set<String>? {
         return pool?.toSet()
+    }
+
+    fun addBet(playerId: String, athleteNo: Int) {
+        if (athleteNo < 1 || athleteNo > 2) {
+            throw IllegalArgumentException("Only 1 or 2 allowed")
+        } else {
+            bets[playerId] = athleteNo;
+        }
     }
 
     fun setPool(closedPool: Set<String>) {
