@@ -9,11 +9,29 @@ class Match(val matchId: String, val athlete1Name: String, val athlete2Name: Str
         return pool?.toSet()
     }
 
+    fun getBets(): Map<String, Int> {
+        return bets.toMap()
+    }
+
     fun addBet(playerId: String, athleteNo: Int) {
-        if (athleteNo < 1 || athleteNo > 2) {
+        if (pool != null) {
+            throw IncompatibleClassChangeError("Betting is closed")
+        } else if (athleteNo < 1 || athleteNo > 2) {
             throw IllegalArgumentException("Only 1 or 2 allowed")
+        } else if (bets.containsKey(playerId)) {
+            throw IllegalArgumentException("Player has already bet on this match")
         } else {
             bets[playerId] = athleteNo;
+        }
+    }
+
+    fun removeBet(playerId: String) {
+        if (pool != null) {
+            throw IncompatibleClassChangeError("Betting is closed")
+        } else if (bets.containsKey(playerId)) {
+            bets.remove(playerId);
+        } else {
+            throw IllegalArgumentException("Player has not bet to this match")
         }
     }
 

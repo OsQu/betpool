@@ -1,4 +1,4 @@
-object Betpool {
+class Betpool {
     private var winnings = Winnings()
     private var currentPlayers: Set<String> = setOf()
     private var matches: HashMap<String, Match> = HashMap(mapOf())
@@ -30,6 +30,16 @@ object Betpool {
             throw IllegalArgumentException("Player must be in the current pool in order to bet")
         } else {
             matches[action.matchId]?.addBet(action.playerId, action.athleteNo)
+        }
+    }
+
+    fun applyAction(action: Action.WithdrawBet) {
+        if (!matches.containsKey(action.matchId)) {
+            throw IllegalArgumentException("matchId doesn't exist")
+        } else if (!currentPlayers.contains(action.playerId)) {
+            throw IllegalArgumentException("Player must be in the current pool in order to bet")
+        } else {
+            matches[action.matchId]?.removeBet(action.playerId)
         }
     }
 

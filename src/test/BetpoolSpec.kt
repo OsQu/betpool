@@ -7,20 +7,23 @@ import java.util.Date
 
 class BetpoolSpec : Spek({
     it("PlayerJoin action adds a player to the pool") {
-        Betpool.applyAction(Action.PlayerJoin("first"))
-        Betpool.getCurrentPlayers() shouldEqual setOf("first")
+        val betpool = Betpool()
+        betpool.applyAction(Action.PlayerJoin("first"))
+        betpool.getCurrentPlayers() shouldEqual setOf("first")
     }
 
     it("PlayerQuit action remove a player from the pool") {
-        Betpool.applyAction(Action.PlayerJoin("first"))
-        Betpool.applyAction(Action.PlayerJoin("second"))
-        Betpool.getCurrentPlayers() shouldEqual setOf("first", "second")
-        Betpool.applyAction(Action.PlayerQuit("first"))
-        Betpool.getCurrentPlayers() shouldEqual setOf("second")
+        val betpool = Betpool()
+        betpool.applyAction(Action.PlayerJoin("first"))
+        betpool.applyAction(Action.PlayerJoin("second"))
+        betpool.getCurrentPlayers() shouldEqual setOf("first", "second")
+        betpool.applyAction(Action.PlayerQuit("first"))
+        betpool.getCurrentPlayers() shouldEqual setOf("second")
     }
 
     it("MatchNew action adds a match") {
-        Betpool.applyAction(Action.MatchNew(matchId = "testId", athlete1Name = "Ronnie", athlete2Name = "Selby", startDate = Date()))
-        Betpool.getMatches().keys shouldContainAll listOf("testId")
+        val betpool = Betpool()
+        betpool.applyAction(Action.MatchNew(matchId = "testId", athlete1Name = "Ronnie", athlete2Name = "Selby", startDate = Date()))
+        betpool.getMatches().keys shouldContainAll listOf("testId")
     }
 })

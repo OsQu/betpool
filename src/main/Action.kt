@@ -7,5 +7,5 @@ sealed class Action {
     data class PlayerJoin(val playerId: String): Action()
     data class PlayerQuit(val playerId: String): Action()
     data class Bet(val matchId: String, val playerId: String, val athleteNo: Int): Action()
-    //data class WithdrawBet(val matchId: String, val playerId: String): Action()
+    data class WithdrawBet(val matchId: String, val playerId: String): Action()
 }
