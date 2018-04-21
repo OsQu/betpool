@@ -55,14 +55,14 @@ class MatchSpec : Spek({
 
     it("matchEnd throws is match has not started") {
         var match = createMatch()
-        val func = { match.end("oddsId1") }
+        val func = { match.end("oddsId1", setOf()) }
         func shouldThrow IllegalArgumentException::class
     }
 
     it("matchEnd throws is winnerId is not in the odds") {
         var match = createMatch()
         match.start(setOf("p1", "p2"))
-        val func = { match.end("invalid") }
+        val func = { match.end("invalid", setOf()) }
         func shouldThrow IllegalArgumentException::class
     }
 
@@ -70,14 +70,14 @@ class MatchSpec : Spek({
         var match = createMatch()
         match.start(setOf("p1", "p2"))
         match.hasEnded() shouldEqual false
-        match.end("oddsId1")
+        match.end("oddsId1", setOf())
         match.hasEnded() shouldEqual true
     }
 
     it("MatchEnd returns a Winning") {
         val match = createMatch()
         match.start(setOf("p1", "p2"))
-        val winnings = match.end("oddsId1")
+        val winnings = match.end("oddsId1", setOf())
         winnings `should be instance of` Winnings::class
     }
 

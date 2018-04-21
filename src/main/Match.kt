@@ -44,14 +44,14 @@ class Match(val matchId: String, private val odds: Odds, val startDate: Date) {
         }
     }
 
-    fun end(winner: String): Winnings {
+    fun end(winner: String, pool: Set<String>): Winnings {
         if (!isStarted()) {
             throw IllegalArgumentException("Cannot end a match that has not started")
         } else if (!odds.containsId(winner)) {
             throw IllegalArgumentException("Winner is not in the match odds")
         } else {
             ended = true
-            return Winnings()
+            return Winnings.create(odds = odds, bets = bets, pool = pool, winner = winner)
         }
     }
 

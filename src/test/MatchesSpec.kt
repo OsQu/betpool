@@ -50,13 +50,13 @@ class MatchesSpec : Spek({
         val matches = Matches()
         matches.newMatch(Action.MatchNew(matchId = "testId", odds = createOdds(), startDate = Date()))
         matches.startMatch(Action.MatchStart(matchId = "testId"), setOf("p1", "p2"))
-        matches.endMatch(Action.MatchEnd(matchId = "testId", winner = "oddsId1"))
+        matches.endMatch(Action.MatchEnd(matchId = "testId", winner = "oddsId1"), setOf())
         matches.getMatches()["testId"]?.hasEnded() shouldEqual true
     }
 
     it("MatchEnd throws if match doesn't exist") {
         val matches = Matches()
-        val func = { matches.endMatch(Action.MatchEnd(matchId = "testId", winner = "oddsId1")) }
+        val func = { matches.endMatch(Action.MatchEnd(matchId = "testId", winner = "oddsId1"), setOf()) }
         func shouldThrow IllegalArgumentException::class
     }
 })

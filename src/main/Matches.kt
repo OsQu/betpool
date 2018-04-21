@@ -33,11 +33,11 @@ class Matches {
         }
     }
 
-    fun endMatch(action: Action.MatchEnd) {
+    fun endMatch(action: Action.MatchEnd, pool: Set<String>): Winnings {
         if (!matches.containsKey(action.matchId)) {
             throw IllegalArgumentException("matchId doesn't exist")
         } else {
-            matches[action.matchId]!!.end("oddsId1")
+            return matches[action.matchId]!!.end("oddsId1", pool)
         }
     }
 
