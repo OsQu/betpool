@@ -6,6 +6,11 @@ import org.jetbrains.spek.api.dsl.it
 import java.util.Date
 
 class BetpoolSpec : Spek({
+    fun createOdds(): Odds {
+        return Odds(
+                mapOf("oddsId1" to Competitor(name = "Ronnie", odds = 1.5f), "oddsId2" to Competitor(name = "Selby", odds = 2f))
+        )
+    }
     it("PlayerJoin action adds a player to the pool") {
         val betpool = Betpool()
         betpool.applyAction(Action.PlayerJoin("first"))
@@ -23,13 +28,13 @@ class BetpoolSpec : Spek({
 
     it("MatchNew action adds a match") {
         val betpool = Betpool()
-        betpool.applyAction(Action.MatchNew(matchId = "testId", athlete1Name = "Ronnie", athlete2Name = "Selby", startDate = Date()))
+        betpool.applyAction(Action.MatchNew(matchId = "testId", odds = createOdds(), startDate = Date()))
         betpool.getMatches().keys shouldContainAll listOf("testId")
     }
 
     it("MatchStart starts match") {
         val betpool = Betpool()
-        betpool.applyAction(Action.MatchNew(matchId = "testId", athlete1Name = "Ronnie", athlete2Name = "Selby", startDate = Date()))
+        betpool.applyAction(Action.MatchNew(matchId = "testId", odds = createOdds(), startDate = Date()))
         betpool.applyAction(Action.MatchStart(matchId = "testId"))
         betpool.getMatches()
     }

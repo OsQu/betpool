@@ -6,24 +6,29 @@ import org.jetbrains.spek.api.dsl.it
 import java.util.Date
 
 class MatchesSpec : Spek({
+    fun createOdds(): Odds {
+        return Odds(
+                mapOf("oddsId1" to Competitor(name = "Ronnie", odds = 1.5f), "oddsId2" to Competitor(name = "Selby", odds = 2f))
+        )
+    }
     it("MatchNew action adds a match") {
         val matches = Matches()
-        matches.newMatch(Action.MatchNew(matchId = "testId", athlete1Name = "Ronnie", athlete2Name = "Selby", startDate = Date()))
+        matches.newMatch(Action.MatchNew(matchId = "testId", odds = createOdds(), startDate = Date()))
         matches.getMatches().keys shouldContainAll listOf("testId")
     }
 
     it("MatchNew throws if matchId exists") {
         val matches = Matches()
-        matches.newMatch(Action.MatchNew(matchId = "testId", athlete1Name = "Ronnie", athlete2Name = "Selby", startDate = Date()))
+        matches.newMatch(Action.MatchNew(matchId = "testId", odds = createOdds(), startDate = Date()))
         val func = {
-            matches.newMatch(Action.MatchNew(matchId = "testId", athlete1Name = "Selby", athlete2Name = "Ronnie", startDate = Date()))
+            matches.newMatch(Action.MatchNew(matchId = "testId", odds = createOdds(), startDate = Date()))
         }
         func shouldThrow IllegalArgumentException::class
     }
 
     it("MatchStart starts match") {
         val matches = Matches()
-        matches.newMatch(Action.MatchNew(matchId = "testId", athlete1Name = "Ronnie", athlete2Name = "Selby", startDate = Date()))
+        matches.newMatch(Action.MatchNew(matchId = "testId", odds = createOdds(), startDate = Date()))
         matches.startMatch(Action.MatchStart(matchId = "testId"), setOf("p1", "p2"))
         matches.getMatches()
     }
@@ -36,7 +41,7 @@ class MatchesSpec : Spek({
 
     it("MatchStart starts the match") {
         val matches = Matches()
-        matches.newMatch(Action.MatchNew(matchId = "testId", athlete1Name = "Ronnie", athlete2Name = "Selby", startDate = Date()))
+        matches.newMatch(Action.MatchNew(matchId = "testId", odds = createOdds(), startDate = Date()))
         matches.startMatch(Action.MatchStart(matchId = "testId"), setOf("p1", "p2"))
         matches.getMatches()["testId"]?.isStarted() shouldEqual true
     }

@@ -5,7 +5,7 @@ class Matches {
         if (matches.containsKey(action.matchId)) {
             throw IllegalArgumentException("Match for the id already exists")
         } else {
-            matches[action.matchId] = Match(action.matchId, action.athlete1Name, action.athlete2Name, action.startDate)
+            matches[action.matchId] = Match(action.matchId, action.odds, action.startDate)
         }
     }
 
@@ -13,7 +13,7 @@ class Matches {
         if (!matches.containsKey(action.matchId)) {
             throw IllegalArgumentException("matchId doesn't exist")
         } else {
-            matches[action.matchId]?.addBet(action.playerId, action.athleteNo)
+            matches[action.matchId]?.addBet(action.playerId, action.oddsId)
         }
     }
 

@@ -1,27 +1,27 @@
 import java.util.*
 import kotlin.collections.HashMap
 
-class Match(val matchId: String, val athlete1Name: String, val athlete2Name: String, val startDate: Date) {
+class Match(val matchId: String, val odds: Odds, val startDate: Date) {
     private var pool: Set<String>? = null
-    private var bets: HashMap<String, Int> = HashMap(mapOf())
+    private var bets: HashMap<String, String> = HashMap(mapOf())
 
     fun getPool(): Set<String>? {
         return pool?.toSet()
     }
 
-    fun getBets(): Map<String, Int> {
+    fun getBets(): Map<String, String> {
         return bets.toMap()
     }
 
-    fun addBet(playerId: String, athleteNo: Int) {
+    fun addBet(playerId: String, oddsId: String) {
         if (pool != null) {
             throw IncompatibleClassChangeError("Betting is closed")
-        } else if (athleteNo < 1 || athleteNo > 2) {
-            throw IllegalArgumentException("Only 1 or 2 allowed")
+        } else if (!odds.containsId(oddsId)) {
+            throw IllegalArgumentException("OddsId doesn't exist on this match")
         } else if (bets.containsKey(playerId)) {
             throw IllegalArgumentException("Player has already bet on this match")
         } else {
-            bets[playerId] = athleteNo;
+            bets[playerId] = oddsId;
         }
     }
 
@@ -45,9 +45,5 @@ class Match(val matchId: String, val athlete1Name: String, val athlete2Name: Str
 
     fun isStarted(): Boolean {
         return pool != null
-    }
-
-    override fun toString(): String {
-        return "$athlete1Name - $athlete2Name"
     }
 }
