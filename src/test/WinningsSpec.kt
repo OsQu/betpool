@@ -46,11 +46,11 @@ class WinningsSpec : Spek({
         }
 
         it("creates a Winnings with the results dealed out") {
-            val odds = Odds(mapOf("oddsId1" to Competitor(name = "Ronnie", odds = 150), "oddsId2" to Competitor(name = "Selby", odds = 200)))
+            val odds = Odds(mapOf("oddsId1" to Competitor(name = "Ronnie", odds = 167), "oddsId2" to Competitor(name = "Selby", odds = 200)))
             val bets: HashMap<String,String> = HashMap(mapOf("p1" to "oddsId1"))
             val pool = setOf("p1", "p2", "p3")
             val winnings = Winnings.create(odds = odds, bets = bets, pool = pool, winner = "oddsId1")
-            winnings.getData() shouldEqual mapOf("p1" to 33, "p2" to -17, "p3" to -16)
+            winnings.getData() shouldEqual mapOf("p1" to 55, "p2" to -28, "p3" to -27)
         }
     }
 })
