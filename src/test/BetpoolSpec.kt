@@ -38,4 +38,21 @@ class BetpoolSpec : Spek({
         betpool.applyAction(Action.MatchStart(matchId = "testId"))
         betpool.getMatches()
     }
+
+    it("Bet bets a match") {
+        val betpool = Betpool()
+        betpool.applyAction(Action.MatchNew(matchId = "testId", odds = createOdds(), startDate = Date()))
+        betpool.applyAction(Action.PlayerJoin("first"))
+        betpool.applyAction(Action.Bet(playerId = "first", matchId = "testId", oddsId = "oddsId1"))
+        betpool.getMatches()["testId"]!!.getBets()["first"] shouldEqual "oddsId1"
+    }
+
+    it("WithdrawBet withdraws a bet") {
+        val betpool = Betpool()
+        betpool.applyAction(Action.MatchNew(matchId = "testId", odds = createOdds(), startDate = Date()))
+        betpool.applyAction(Action.PlayerJoin("first"))
+        betpool.applyAction(Action.Bet(playerId = "first", matchId = "testId", oddsId = "oddsId1"))
+        betpool.applyAction(Action.WithdrawBet(playerId = "first", matchId = "testId"))
+        betpool.getMatches()["testId"]!!.getBets().containsKey("first") shouldEqual false
+    }
 })
