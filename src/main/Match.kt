@@ -43,6 +43,10 @@ class Match(val matchId: String, val athlete1Name: String, val athlete2Name: Str
         }
     }
 
+    fun isStarted(): Boolean {
+        return pool != null
+    }
+
     override fun toString(): String {
         return "$athlete1Name - $athlete2Name"
     }

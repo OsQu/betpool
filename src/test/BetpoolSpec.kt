@@ -26,4 +26,11 @@ class BetpoolSpec : Spek({
         betpool.applyAction(Action.MatchNew(matchId = "testId", athlete1Name = "Ronnie", athlete2Name = "Selby", startDate = Date()))
         betpool.getMatches().keys shouldContainAll listOf("testId")
     }
+
+    it("MatchStart starts match") {
+        val betpool = Betpool()
+        betpool.applyAction(Action.MatchNew(matchId = "testId", athlete1Name = "Ronnie", athlete2Name = "Selby", startDate = Date()))
+        betpool.applyAction(Action.MatchStart(matchId = "testId"))
+        betpool.getMatches()
+    }
 })

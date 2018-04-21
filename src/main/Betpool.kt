@@ -1,7 +1,7 @@
 class Betpool {
     private var winnings = Winnings()
     private var currentPlayers: Set<String> = setOf()
-    private var matches: HashMap<String, Match> = HashMap(mapOf())
+    private var matches: Matches = Matches()
 
     fun getCurrentPlayers(): Set<String> {
         return currentPlayers.toSet()
@@ -16,34 +16,26 @@ class Betpool {
     }
 
     fun applyAction(action: Action.MatchNew) {
-        if (matches.containsKey(action.matchId)) {
-            throw IllegalArgumentException("Match for the id already exists")
-        } else {
-            matches[action.matchId] = Match(action.matchId, action.athlete1Name, action.athlete2Name, action.startDate)
-        }
+        matches.newMatch(action)
     }
 
     fun applyAction(action: Action.Bet) {
-        if (!matches.containsKey(action.matchId)) {
-            throw IllegalArgumentException("matchId doesn't exist")
-        } else if (!currentPlayers.contains(action.playerId)) {
+        if (!currentPlayers.contains(action.playerId)) {
             throw IllegalArgumentException("Player must be in the current pool in order to bet")
         } else {
-            matches[action.matchId]?.addBet(action.playerId, action.athleteNo)
+            matches.addBet(action)
         }
     }
 
     fun applyAction(action: Action.WithdrawBet) {
-        if (!matches.containsKey(action.matchId)) {
-            throw IllegalArgumentException("matchId doesn't exist")
-        } else if (!currentPlayers.contains(action.playerId)) {
-            throw IllegalArgumentException("Player must be in the current pool in order to bet")
-        } else {
-            matches[action.matchId]?.removeBet(action.playerId)
-        }
+        matches.withdrawBet(action)
+    }
+
+    fun applyAction(action: Action.MatchStart) {
+        matches.startMatch(action, currentPlayers)
     }
 
     fun getMatches(): Map<String, Match> {
-        return matches.toMap()
+        return matches.getMatches().toMap()
     }
 }
