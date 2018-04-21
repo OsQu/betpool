@@ -52,6 +52,20 @@ class MatchSpec : Spek({
         match.getPool() shouldEqual setOf("p1", "p2")
     }
 
+    it("matchEnd throws is match has not started") {
+        var match = createMatch()
+        val func = { match.end() }
+        func shouldThrow IllegalArgumentException::class
+    }
+
+    it("matchEnd ends the match") {
+        var match = createMatch()
+        match.setPool(setOf("p1", "p2"))
+        match.hasEnded() shouldEqual false
+        match.end()
+        match.hasEnded() shouldEqual true
+    }
+
     describe("when pool is set") {
         it("setPool throws") {
             var match = createMatch()

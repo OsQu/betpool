@@ -55,4 +55,12 @@ class BetpoolSpec : Spek({
         betpool.applyAction(Action.WithdrawBet(playerId = "first", matchId = "testId"))
         betpool.getMatches()["testId"]!!.getBets().containsKey("first") shouldEqual false
     }
+
+    it("MatchEnd ends a match") {
+        val betpool = Betpool()
+        betpool.applyAction(Action.MatchNew(matchId = "testId", odds = createOdds(), startDate = Date()))
+        betpool.applyAction(Action.MatchStart(matchId = "testId"))
+        betpool.applyAction(Action.MatchEnd(matchId = "testId"))
+        betpool.getMatches()["testId"]!!.hasEnded() shouldEqual true
+    }
 })

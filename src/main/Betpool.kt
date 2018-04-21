@@ -35,6 +35,10 @@ class Betpool {
         matches.startMatch(action, currentPlayers)
     }
 
+    fun applyAction(action: Action.MatchEnd) {
+        matches.endMatch(action)
+    }
+
     fun getMatches(): Map<String, Match> {
         return matches.getMatches().toMap()
     }

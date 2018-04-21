@@ -4,6 +4,7 @@ import kotlin.collections.HashMap
 class Match(val matchId: String, val odds: Odds, val startDate: Date) {
     private var pool: Set<String>? = null
     private var bets: HashMap<String, String> = HashMap(mapOf())
+    private var ended: Boolean = false
 
     fun getPool(): Set<String>? {
         return pool?.toSet()
@@ -41,6 +42,18 @@ class Match(val matchId: String, val odds: Odds, val startDate: Date) {
         } else {
             throw IncompatibleClassChangeError("Changing the betting pool is not allowed")
         }
+    }
+
+    fun end() {
+        if (!isStarted()) {
+            throw IllegalArgumentException("Cannot end a match that has not started")
+        } else {
+            ended = true
+        }
+    }
+
+    fun hasEnded(): Boolean {
+        return ended
     }
 
     fun isStarted(): Boolean {

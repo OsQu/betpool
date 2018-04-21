@@ -33,8 +33,15 @@ class Matches {
         }
     }
 
+    fun endMatch(action: Action.MatchEnd) {
+        if (!matches.containsKey(action.matchId)) {
+            throw IllegalArgumentException("matchId doesn't exist")
+        } else {
+            matches[action.matchId]!!.end()
+        }
+    }
+
     fun getMatches(): Map<String, Match> {
         return matches.toMap()
     }
-
 }
