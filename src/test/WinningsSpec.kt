@@ -1,6 +1,7 @@
 import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldThrow
 import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 
 class WinningsSpec : Spek({
@@ -34,5 +35,22 @@ class WinningsSpec : Spek({
     it("is impossible to create a Winning where sum of values is not zero") {
         val func = { Winnings(HashMap(mapOf("p1" to 1))) }
         func shouldThrow IllegalArgumentException::class
+    }
+
+    describe("create") {
+        it("creates a Winnings instance from a match result") {
+            val odds = Odds(mapOf("oddsId1" to Competitor(name = "Ronnie", odds = 150), "oddsId2" to Competitor(name = "Selby", odds = 200)))
+            val bets: HashMap<String,String> = HashMap(mapOf())
+            val winnings = Winnings.create(odds = odds, bets = bets, pool = setOf(), winner = "oddsId1")
+            winnings.getData() shouldEqual mapOf()
+        }
+
+        it("creates a Winnings with the results dealed out") {
+            val odds = Odds(mapOf("oddsId1" to Competitor(name = "Ronnie", odds = 150), "oddsId2" to Competitor(name = "Selby", odds = 200)))
+            val bets: HashMap<String,String> = HashMap(mapOf("p1" to "oddsId1"))
+            val pool = setOf("p1", "p2", "p3")
+            val winnings = Winnings.create(odds = odds, bets = bets, pool = pool, winner = "oddsId1")
+            winnings.getData() shouldEqual mapOf("p1" to 33, "p2" to -17, "p3" to -16)
+        }
     }
 })

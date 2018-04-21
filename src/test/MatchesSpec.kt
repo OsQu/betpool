@@ -8,7 +8,7 @@ import java.util.Date
 class MatchesSpec : Spek({
     fun createOdds(): Odds {
         return Odds(
-                mapOf("oddsId1" to Competitor(name = "Ronnie", odds = 1.5f), "oddsId2" to Competitor(name = "Selby", odds = 2f))
+                mapOf("oddsId1" to Competitor(name = "Ronnie", odds = 150), "oddsId2" to Competitor(name = "Selby", odds = 200))
         )
     }
     it("MatchNew action adds a match") {
@@ -50,13 +50,13 @@ class MatchesSpec : Spek({
         val matches = Matches()
         matches.newMatch(Action.MatchNew(matchId = "testId", odds = createOdds(), startDate = Date()))
         matches.startMatch(Action.MatchStart(matchId = "testId"), setOf("p1", "p2"))
-        matches.endMatch(Action.MatchEnd(matchId = "testId"))
+        matches.endMatch(Action.MatchEnd(matchId = "testId", winner = "oddsId1"))
         matches.getMatches()["testId"]?.hasEnded() shouldEqual true
     }
 
     it("MatchEnd throws if match doesn't exist") {
         val matches = Matches()
-        val func = { matches.endMatch(Action.MatchEnd(matchId = "testId")) }
+        val func = { matches.endMatch(Action.MatchEnd(matchId = "testId", winner = "oddsId1")) }
         func shouldThrow IllegalArgumentException::class
     }
 })

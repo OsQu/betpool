@@ -29,7 +29,7 @@ class Matches {
         if (!matches.containsKey(action.matchId)) {
             throw IllegalArgumentException("matchId doesn't exist")
         } else {
-            matches[action.matchId]?.setPool(pool)
+            matches[action.matchId]?.start(pool)
         }
     }
 
@@ -37,7 +37,7 @@ class Matches {
         if (!matches.containsKey(action.matchId)) {
             throw IllegalArgumentException("matchId doesn't exist")
         } else {
-            matches[action.matchId]!!.end()
+            matches[action.matchId]!!.end("oddsId1")
         }
     }
 

@@ -8,7 +8,7 @@ import java.util.Date
 class BetpoolSpec : Spek({
     fun createOdds(): Odds {
         return Odds(
-                mapOf("oddsId1" to Competitor(name = "Ronnie", odds = 1.5f), "oddsId2" to Competitor(name = "Selby", odds = 2f))
+                mapOf("oddsId1" to Competitor(name = "Ronnie", odds = 150), "oddsId2" to Competitor(name = "Selby", odds = 200))
         )
     }
     it("PlayerJoin action adds a player to the pool") {
@@ -60,7 +60,7 @@ class BetpoolSpec : Spek({
         val betpool = Betpool()
         betpool.applyAction(Action.MatchNew(matchId = "testId", odds = createOdds(), startDate = Date()))
         betpool.applyAction(Action.MatchStart(matchId = "testId"))
-        betpool.applyAction(Action.MatchEnd(matchId = "testId"))
+        betpool.applyAction(Action.MatchEnd(matchId = "testId", winner = "oddsId1"))
         betpool.getMatches()["testId"]!!.hasEnded() shouldEqual true
     }
 })
