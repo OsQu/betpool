@@ -74,8 +74,6 @@ class BetpoolSpec : Spek({
         betpool.applyAction(Action.MatchEnd(matchId = "testId", winner = "oddsId1"))
         betpool.getWinnings() shouldEqual mapOf("first" to 37, "second" to -37)
         betpool.applyAction(Action.MatchNew(matchId = "testId2", odds = createOdds(), startDate = Date()))
-        betpool.applyAction(Action.PlayerJoin("first"))
-        betpool.applyAction(Action.PlayerJoin("second"))
         betpool.applyAction(Action.Bet(playerId = "first", matchId = "testId2", oddsId = "oddsId1"))
         betpool.applyAction(Action.MatchStart(matchId = "testId2"))
         betpool.applyAction(Action.MatchEnd(matchId = "testId2", winner = "oddsId1"))
