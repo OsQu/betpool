@@ -14,6 +14,41 @@ import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.xit
 import java.net.URL
 
+const val jsonResponse = """
+[
+  {
+    "marketId": "1.142872972",
+    "event": "Mark Allen v Liam Highfield",
+    "start": "2018-04-22T09:00:00.000Z",
+    "odds": {
+      "2279947": {
+        "name": "Mark Allen",
+        "odds": 1.31
+      },
+      "4392732": {
+        "name": "Liam Highfield",
+        "odds": 4
+      }
+    }
+  },
+  {
+    "marketId": "1.142873360",
+    "event": "Shaun Murphy v Jamie Jones",
+    "start": "2018-04-22T13:30:00.000Z",
+    "odds": {
+      "2278789": {
+        "name": "Shaun Murphy",
+        "odds": 1.4
+      },
+      "3502366": {
+        "name": "Jamie Jones",
+        "odds": 3.4
+      }
+    }
+  }
+]
+"""
+
 class MarketsApiSpec : Spek({
     val client = mock<Client>()
     val oldClient = FuelManager.instance.client
@@ -27,9 +62,16 @@ class MarketsApiSpec : Spek({
     }
 
     describe("#fetch") {
-        xit("returns List of Markets") { // TODO: Figure out how to return some data in Response
-            whenever(client.executeRequest(any())).thenReturn(Response(URL("http://www.example.com"), 200, "[]"))
+        it("returns List of Markets") {
+            whenever(client.executeRequest(any())).thenReturn(Response(
+                url = URL("http://www.example.com"),
+                statusCode = 200,
+                dataStream = jsonResponse.byteInputStream()
+            ))
             val markets = MarketsAPI.fetch()
+
+            markets.size shouldEqual 2
+            markets.first().event shouldEqual "Mark Allen v Liam Highfield"
         }
     }
 })
