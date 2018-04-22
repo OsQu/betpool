@@ -24,11 +24,19 @@ class Betpool {
     }
 
     fun applyAction(action: Action.PlayerJoin) {
-        currentPlayers = currentPlayers.plus(action.playerId)
+        if (currentPlayers.contains(action.playerId)) {
+            throw IllegalArgumentException("Player already exists")
+        } else {
+            currentPlayers = currentPlayers.plus(action.playerId)
+        }
     }
 
     fun applyAction(action: Action.PlayerQuit) {
-        currentPlayers = currentPlayers.minus(action.playerId)
+        if (!currentPlayers.contains(action.playerId)) {
+            throw IllegalArgumentException("Player doesn't exists")
+        } else {
+            currentPlayers = currentPlayers.minus(action.playerId)
+        }
     }
 
     fun applyAction(action: Action.MatchNew) {
