@@ -1,4 +1,3 @@
-import org.amshove.kluent.should
 import org.amshove.kluent.shouldEqual
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.it
