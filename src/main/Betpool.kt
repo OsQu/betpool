@@ -7,6 +7,22 @@ class Betpool {
         return currentPlayers.toSet()
     }
 
+    fun applyActions(actions: List<Action>) {
+        actions.forEach { applyAction(it) }
+    }
+
+    fun applyAction(action: Action) {
+        when(action) {
+            is Action.PlayerJoin -> applyAction(action)
+            is Action.PlayerQuit -> applyAction(action)
+            is Action.MatchNew -> applyAction(action)
+            is Action.MatchStart -> applyAction(action)
+            is Action.MatchEnd -> applyAction(action)
+            is Action.Bet -> applyAction(action)
+            is Action.WithdrawBet -> applyAction(action)
+        }
+    }
+
     fun applyAction(action: Action.PlayerJoin) {
         currentPlayers = currentPlayers.plus(action.playerId)
     }

@@ -4,10 +4,8 @@ import java.io.PrintWriter
 
 class Persistence(private val logFile: String) {
     fun logAction(action: Action) {
-        val writer = PrintWriter(logFile)
         val jsonAdapter = Moshi.Builder().build().adapter(action.javaClass)
-        writer.append(jsonAdapter.toJson(action) + "\n")
-        writer.close()
+        File(logFile).appendText(jsonAdapter.toJson(action) + "\n")
     }
 
     fun readActions(): List<Action> {
