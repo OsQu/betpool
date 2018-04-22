@@ -20,6 +20,10 @@ class Match(val matchId: String, private val odds: Odds, val startDate: Date) {
         return winner!!
     }
 
+    fun getOdds(): Odds {
+        return odds
+    }
+
     fun addBet(playerId: String, oddsId: String) {
         if (pool != null) {
             throw IncompatibleClassChangeError("Betting is closed")

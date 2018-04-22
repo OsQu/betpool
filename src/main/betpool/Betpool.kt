@@ -4,6 +4,7 @@ class Betpool {
     private var winnings = Winnings()
     private var currentPlayers: Set<String> = setOf()
     private var matches: Matches = Matches()
+    val playerNames: HashMap<String, String> = HashMap(mapOf())
 
     fun getCurrentPlayers(): Set<String> {
         return currentPlayers.toSet()
@@ -30,6 +31,7 @@ class Betpool {
             throw IllegalArgumentException("Player already exists")
         } else {
             currentPlayers = currentPlayers.plus(action.playerId)
+            playerNames[action.playerId] = action.playerName
         }
     }
 

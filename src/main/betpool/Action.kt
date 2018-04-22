@@ -35,10 +35,10 @@ sealed class Action(val type: Type) {
             }
         }
     }
-    data class MatchNew(val matchId: String, val odds: Odds, val startDate: Date): Action(Type.MATCH_NEW)
+    data class MatchNew(val matchId: String, val matchName: String, val odds: Odds, val startDate: Date): Action(Type.MATCH_NEW)
     data class MatchStart(val matchId: String): Action(Type.MATCH_START)
     data class MatchEnd(val matchId: String, val winner: String): Action(Type.MATCH_END)
-    data class PlayerJoin(val playerId: String): Action(Type.PLAYER_JOIN)
+    data class PlayerJoin(val playerId: String, val playerName: String): Action(Type.PLAYER_JOIN)
     data class PlayerQuit(val playerId: String): Action(Type.PLAYER_QUIT)
     data class Bet(val matchId: String, val playerId: String, val oddsId: String): Action(Type.BET)
     data class WithdrawBet(val matchId: String, val playerId: String): Action(Type.WITHDRAW_BET)

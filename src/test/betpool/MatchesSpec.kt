@@ -13,24 +13,27 @@ class MatchesSpec : Spek({
                 mapOf("oddsId1" to Competitor(name = "Ronnie", odds = 150), "oddsId2" to Competitor(name = "Selby", odds = 200))
         )
     }
+    fun newMatchAction(): Action.MatchNew {
+        return Action.MatchNew(matchId = "testId", matchName = "Ronnie vs. Selby", odds = createOdds(), startDate = Date())
+    }
     it("MatchNew action adds a match") {
         val matches = Matches()
-        matches.newMatch(Action.MatchNew(matchId = "testId", odds = createOdds(), startDate = Date()))
+        matches.newMatch(newMatchAction())
         matches.getMatches().keys shouldContainAll listOf("testId")
     }
 
     it("MatchNew throws if matchId exists") {
         val matches = Matches()
-        matches.newMatch(Action.MatchNew(matchId = "testId", odds = createOdds(), startDate = Date()))
+        matches.newMatch(newMatchAction())
         val func = {
-            matches.newMatch(Action.MatchNew(matchId = "testId", odds = createOdds(), startDate = Date()))
+            matches.newMatch(newMatchAction())
         }
         func shouldThrow IllegalArgumentException::class
     }
 
     it("MatchStart starts match") {
         val matches = Matches()
-        matches.newMatch(Action.MatchNew(matchId = "testId", odds = createOdds(), startDate = Date()))
+        matches.newMatch(newMatchAction())
         matches.startMatch(Action.MatchStart(matchId = "testId"), setOf("p1", "p2"))
         matches.getMatches()
     }
@@ -43,14 +46,14 @@ class MatchesSpec : Spek({
 
     it("MatchStart starts the match") {
         val matches = Matches()
-        matches.newMatch(Action.MatchNew(matchId = "testId", odds = createOdds(), startDate = Date()))
+        matches.newMatch(newMatchAction())
         matches.startMatch(Action.MatchStart(matchId = "testId"), setOf("p1", "p2"))
         matches.getMatches()["testId"]?.isStarted() shouldEqual true
     }
 
     it("MatchEnd ends the match") {
         val matches = Matches()
-        matches.newMatch(Action.MatchNew(matchId = "testId", odds = createOdds(), startDate = Date()))
+        matches.newMatch(newMatchAction())
         matches.startMatch(Action.MatchStart(matchId = "testId"), setOf("p1", "p2"))
         matches.endMatch(Action.MatchEnd(matchId = "testId", winner = "oddsId1"))
         matches.getMatches()["testId"]?.hasEnded() shouldEqual true
