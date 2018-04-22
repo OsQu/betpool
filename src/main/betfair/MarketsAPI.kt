@@ -1,7 +1,6 @@
 package betfair
 
 import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.jackson.responseObject
 
 const val URL = "http://139.59.150.87:4567"
