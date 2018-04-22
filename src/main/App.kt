@@ -1,8 +1,9 @@
 import betfair.MarketsAPI
+import betpool.Betpool
+import betpool.Action
 import flowdock.FlowdockAPI
 import flowdock.model.Activity
 import flowdock.model.Author
-import flowdock.model.Thread
 import org.jooby.Jooby.*
 import org.jooby.Kooby
 import java.util.concurrent.ScheduledThreadPoolExecutor
@@ -12,9 +13,9 @@ const val UPDATE_RATE = 1L
 
 val UPDATE_TYPE = TimeUnit.MINUTES
 val FLOW_TOKEN = System.getenv("FLOW_TOKEN") ?: throw Exception("FLOW_TOKEN not defined")
+val persistence = Persistence(System.getenv("LOG_FILE") ?: "/tmp/betpool.log")
 
 object State {
-    val persistence = Persistence("/tmp/betpool.log")
     val betpool = Betpool()
 }
 
@@ -38,12 +39,12 @@ class App : Kooby({
 fun applyAction(action: Action) {
     synchronized(State, {
         State.betpool.applyAction(action)
-        State.persistence.logAction(action)
+        persistence.logAction(action)
     })
 }
 
 fun main(args: Array<String>) {
-    State.betpool.applyActions(State.persistence.readActions())
+    State.betpool.applyActions(persistence.readActions())
     val scheduledExecutorPool = ScheduledThreadPoolExecutor(1)
     scheduledExecutorPool.scheduleAtFixedRate(::updateThreads, 0, UPDATE_RATE, UPDATE_TYPE)
     run(::App, args)

@@ -1,9 +1,11 @@
+package betpool
+
 class Matches {
     private var matches: HashMap<String, Match> = HashMap(mapOf())
 
     fun newMatch(action: Action.MatchNew) {
         if (matches.containsKey(action.matchId)) {
-            throw IllegalArgumentException("Match for the id already exists")
+            throw IllegalArgumentException("betpool.Match for the id already exists")
         } else {
             matches[action.matchId] = Match(action.matchId, action.odds, action.startDate)
         }

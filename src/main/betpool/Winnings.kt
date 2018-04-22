@@ -1,3 +1,5 @@
+package betpool
+
 import kotlin.math.floor
 
 class Winnings(private var data: HashMap<String, Int> = HashMap()) {

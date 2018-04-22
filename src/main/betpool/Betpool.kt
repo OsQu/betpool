@@ -1,3 +1,5 @@
+package betpool
+
 class Betpool {
     private var winnings = Winnings()
     private var currentPlayers: Set<String> = setOf()

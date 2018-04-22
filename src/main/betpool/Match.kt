@@ -1,3 +1,5 @@
+package betpool
+
 import java.util.*
 import kotlin.collections.HashMap
 

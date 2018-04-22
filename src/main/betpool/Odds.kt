@@ -1,3 +1,5 @@
+package betpool
+
 import kotlin.math.floor
 
 data class Competitor(val name: String, val odds: Int)
@@ -17,7 +19,7 @@ class Odds(initialOdds: Map<String, Competitor>) {
         return scaledOdds.mapValues { it.value.odds }
     }
 
-    fun scaleOdds(initialOdds: Map<String, Competitor>): Map<String, Competitor> {
+    private fun scaleOdds(initialOdds: Map<String, Competitor>): Map<String, Competitor> {
         var summedProbabilities: Float = 0f
         initialOdds.values.forEach {
             summedProbabilities += 1 / (it.odds/100f)

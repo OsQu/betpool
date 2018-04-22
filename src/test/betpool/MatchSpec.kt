@@ -1,3 +1,5 @@
+package betpool
+
 import org.amshove.kluent.`should be instance of`
 import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldThrow

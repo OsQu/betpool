@@ -1,3 +1,5 @@
+package betpool
+
 import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldThrow
 import org.jetbrains.spek.api.Spek
@@ -38,14 +40,14 @@ class WinningsSpec : Spek({
     }
 
     describe("create") {
-        it("creates a Winnings instance from a match result") {
+        it("creates a betpool.Winnings instance from a match result") {
             val odds = Odds(mapOf("oddsId1" to Competitor(name = "Ronnie", odds = 150), "oddsId2" to Competitor(name = "Selby", odds = 200)))
             val bets: HashMap<String,String> = HashMap(mapOf())
             val winnings = Winnings.create(odds = odds, bets = bets, pool = setOf(), winner = "oddsId1")
             winnings.getData() shouldEqual mapOf()
         }
 
-        it("creates a Winnings with the results dealed out") {
+        it("creates a betpool.Winnings with the results dealed out") {
             val odds = Odds(mapOf("oddsId1" to Competitor(name = "Ronnie", odds = 167), "oddsId2" to Competitor(name = "Selby", odds = 200)))
             val bets: HashMap<String,String> = HashMap(mapOf("p1" to "oddsId1"))
             val pool = setOf("p1", "p2", "p3")
