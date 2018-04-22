@@ -13,6 +13,10 @@ class App : Kooby({
         applyAction(Action.PlayerJoin(name))
         "Hello $name!"
     }
+
+    get("market") {
+        MarketsAPI.fetch()
+    }
     get("state") {
         val name = param("name").value("Kotlin")
         "Hello $name!"
@@ -24,8 +28,8 @@ class App : Kooby({
 fun applyAction(action: Action) {
     synchronized(State, {
         State.betpool.applyAction(action)
+        State.persistence.logAction(action)
     })
-    State.persistence.logAction(action)
 }
 
 fun main(args: Array<String>) {
