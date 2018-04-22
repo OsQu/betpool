@@ -36,8 +36,7 @@ class Betpool {
     }
 
     fun applyAction(action: Action.MatchEnd) {
-        val matchWinnings = matches.endMatch(action, currentPlayers)
-        winnings = winnings.merge(matchWinnings)
+        winnings = winnings.merge(matches.endMatch(action))
     }
 
     fun getMatches(): Map<String, Match> {

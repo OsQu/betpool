@@ -23,7 +23,7 @@ class Winnings(private var data: HashMap<String, Int> = HashMap()) {
                 val poolResult = -betWinnings.values.sum()
                 val poolResultPerPlayer: Int = floor((poolResult / pool.size).toDouble()).toInt()
                 var poolResults = pool.associateBy({ it }, { poolResultPerPlayer })
-                var remainder: Int = poolResult % poolResultPerPlayer
+                var remainder: Int = poolResult % pool.size
                 val endResults = pool.plus(bets.keys).associateBy({ it }, { betWinnings.getOrDefault(it, 0) + poolResults.getOrDefault(it, 0) })
                 val evenedEndResults = endResults.mapValues {
                     if (remainder > 0) {
