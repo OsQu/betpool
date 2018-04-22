@@ -84,7 +84,6 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-reflect:1.2.0"
     compile "com.github.kittinunf.fuel:fuel:$fuelVersion"
     compile "com.github.kittinunf.fuel:fuel-jackson:$fuelVersion"
-    compile "org.jetbrains.kotlinx:kotlinx-gradle-serialization-plugin:$kotlinxSerializationVersion"
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile "org.jetbrains.spek:spek-api:$spekVersion"
