@@ -1,6 +1,5 @@
 import com.squareup.moshi.Moshi
 import java.io.File
-import java.io.PrintWriter
 
 class Persistence(private val logFile: String) {
     fun logAction(action: Action) {
