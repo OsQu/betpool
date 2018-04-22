@@ -3,7 +3,7 @@ package betpool
 import java.util.*
 import kotlin.collections.HashMap
 
-class Match(val matchId: String, private val odds: Odds, val startDate: Date) {
+class Match(val matchName: String, private val odds: Odds, val startDate: Date) {
     private var pool: Set<String>? = null
     private var bets: HashMap<String, String> = HashMap(mapOf())
     private var winner: String? = null

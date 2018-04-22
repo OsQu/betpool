@@ -13,8 +13,6 @@ val UPDATE_TYPE = TimeUnit.MINUTES
 val FLOW_TOKEN = System.getenv("FLOW_TOKEN") ?: "" //throw Exception("FLOW_TOKEN not defined")
 val persistence = Persistence(System.getenv("LOG_FILE") ?: "/tmp/betpool.log")
 
-data class UpdateFlowdockAuthor(val userId: String, val name: String)
-
 object State {
     val betpool = Betpool()
 }

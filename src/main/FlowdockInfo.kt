@@ -7,7 +7,7 @@ class FlowdockInfo(val betpool: Betpool) {
     fun flowdockActivity(action: Action): Activity {
         return Activity(
                 title = activityTitle(action),
-                author = getAuthor(),
+                author = getAuthor(action),
                 external_thread_id = getThreadId(action),
                 thread = getThread(action)
         )
@@ -73,10 +73,10 @@ class FlowdockInfo(val betpool: Betpool) {
     }
 
     private fun getMatchThread(matchId: String): flowdock.model.Thread {
-        // TODO: get the info properly
+        val match = betpool.getMatches()[matchId]!!
         return flowdock.model.Thread(
-                title = "Match specific thread - get the info somewhere",
-                fields = mapOf("athlete1" to "odds1", "athlete2" to "odds2"),
+                title = match.matchName,
+                fields = match.getOdds().getOddsWithNames().mapKeys { it.value.name }.mapValues { it.value.odds.toString() },
                 actions = listOf(
                         flowdock.model.UpdateAction(name = "Bet 1", target = flowdock.model.UpdateAction.Target("", "")),
                         flowdock.model.UpdateAction(name = "Bet 2", target = flowdock.model.UpdateAction.Target("", "")),
@@ -85,8 +85,16 @@ class FlowdockInfo(val betpool: Betpool) {
         )
     }
 
-    // TODO: do this properly
-    private fun getAuthor(): Author {
-        return Author("Betpool")
+    private fun getAuthor(action: Action): Author {
+        val name = when(action) {
+            is Action.PlayerJoin -> action.playerName
+            is Action.PlayerQuit -> betpool.playerNames[action.playerId]!!
+            is Action.Bet -> betpool.playerNames[action.playerId]!!
+            is Action.WithdrawBet -> betpool.playerNames[action.playerId]!!
+            is Action.MatchNew -> "Betpool"
+            is Action.MatchStart -> "Betpool"
+            is Action.MatchEnd -> "Betpool"
+        }
+        return Author(name)
     }
 }
