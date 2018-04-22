@@ -6,7 +6,7 @@ import kotlin.collections.HashMap
 class Match(val matchId: String, private val odds: Odds, val startDate: Date) {
     private var pool: Set<String>? = null
     private var bets: HashMap<String, String> = HashMap(mapOf())
-    private var ended: Boolean = false
+    private var winner: String? = null
 
     fun getPool(): Set<String>? {
         return pool?.toSet()
@@ -14,6 +14,10 @@ class Match(val matchId: String, private val odds: Odds, val startDate: Date) {
 
     fun getBets(): Map<String, String> {
         return bets.toMap()
+    }
+
+    fun getWinner(): String {
+        return winner!!
     }
 
     fun addBet(playerId: String, oddsId: String) {
@@ -46,19 +50,19 @@ class Match(val matchId: String, private val odds: Odds, val startDate: Date) {
         }
     }
 
-    fun end(winner: String): Winnings {
+    fun end(matchWinner: String): Winnings {
         if (!isStarted()) {
             throw IllegalArgumentException("Cannot end a match that has not started")
-        } else if (!odds.containsId(winner)) {
+        } else if (!odds.containsId(matchWinner)) {
             throw IllegalArgumentException("Winner is not in the match odds")
         } else {
-            ended = true
-            return Winnings.create(odds = odds, bets = bets, pool = pool!!, winner = winner)
+            winner = matchWinner
+            return Winnings.create(odds = odds, bets = bets, pool = pool!!, winner = matchWinner)
         }
     }
 
     fun hasEnded(): Boolean {
-        return ended
+        return !winner.isNullOrEmpty()
     }
 
     fun isStarted(): Boolean {
