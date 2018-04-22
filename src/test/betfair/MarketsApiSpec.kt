@@ -13,6 +13,7 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.xit
 import java.net.URL
+import java.time.Instant
 
 const val jsonResponse = """
 [
@@ -72,6 +73,7 @@ class MarketsApiSpec : Spek({
 
             markets.size shouldEqual 2
             markets.first().event shouldEqual "Mark Allen v Liam Highfield"
+            markets.first().startTime shouldEqual Instant.parse("2018-04-22T09:00:00.000Z")
         }
     }
 })
