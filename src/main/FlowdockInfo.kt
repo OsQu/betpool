@@ -2,6 +2,7 @@ import betpool.Action
 import betpool.Betpool
 import flowdock.model.Activity
 import flowdock.model.Author
+import flowdock.model.UpdateAction
 
 class FlowdockInfo(val betpool: Betpool) {
     fun flowdockActivity(action: Action): Activity {
@@ -60,8 +61,20 @@ class FlowdockInfo(val betpool: Betpool) {
                 title = "Snooker World Championships 2018",
                 fields = getCurrentWinningsForFlowdock(),
                 actions = listOf(
-                        flowdock.model.UpdateAction(name = "Join pool", target = flowdock.model.UpdateAction.Target("", "")),
-                        flowdock.model.UpdateAction(name = "Quit pool", target = flowdock.model.UpdateAction.Target("", ""))
+                        flowdock.model.UpdateAction(
+                                name = "Join pool",
+                                target = UpdateAction.Target(
+                                        urlTemplate = "$ACTION_URL/join",
+                                        httpMethod = "POST"
+                                )
+                        ),
+                        flowdock.model.UpdateAction(
+                                name = "Quit pool",
+                                target = UpdateAction.Target(
+                                        urlTemplate = "$ACTION_URL/quit",
+                                        httpMethod = "POST"
+                                )
+                        )
                 )
         )
     }
@@ -74,14 +87,22 @@ class FlowdockInfo(val betpool: Betpool) {
 
     private fun getMatchThread(matchId: String): flowdock.model.Thread {
         val match = betpool.getMatches()[matchId]!!
+        val actions = match.getOdds().getOddsWithNames().map {
+            flowdock.model.UpdateAction(
+                    name = "Bet for ${it.value.name}",
+                    target = UpdateAction.Target(
+                            urlTemplate = "$ACTION_URL/bet/${it.key}",
+                            httpMethod = "POST"
+                    )
+            )
+        }.plus(flowdock.model.UpdateAction(name = "Withdraw bet", target = UpdateAction.Target(
+                urlTemplate = "$ACTION_URL/$matchId/withdraw",
+                httpMethod = "POST"
+        )))
         return flowdock.model.Thread(
                 title = match.matchName,
                 fields = match.getOdds().getOddsWithNames().mapKeys { it.value.name }.mapValues { it.value.odds.toString() },
-                actions = listOf(
-                        flowdock.model.UpdateAction(name = "Bet 1", target = flowdock.model.UpdateAction.Target("", "")),
-                        flowdock.model.UpdateAction(name = "Bet 2", target = flowdock.model.UpdateAction.Target("", "")),
-                        flowdock.model.UpdateAction(name = "Withdraw bet", target = flowdock.model.UpdateAction.Target("", ""))
-                )
+                actions = actions
         )
     }
 

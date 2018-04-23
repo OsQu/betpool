@@ -15,6 +15,7 @@ const val UPDATE_RATE = 1L
 val UPDATE_TYPE = TimeUnit.MINUTES
 val FLOW_TOKEN = System.getenv("FLOW_TOKEN") ?: ""
 val persistence = Persistence(System.getenv("LOG_FILE") ?: "/tmp/betpool.log")
+const val ACTION_URL = "http://139.59.150.87"
 
 object State {
     val betpool = Betpool()
@@ -36,7 +37,6 @@ class App : Kooby({
     }
     get("state") {
         val name = param("name").value("Kotlin")
-        "Hello $name!"
         State.betpool.getCurrentPlayers()
     }
 })
@@ -57,7 +57,7 @@ fun main(args: Array<String>) {
 }
 
 fun updateFromMarketData() {
-    BetUpdater(FLOW_TOKEN).run()
+    //BetUpdater(FLOW_TOKEN).run()
     MarketsAPI.fetch()
             .filter { it.startTime > Instant.now().plus(Duration.ofHours(24)) }
             .filter { !State.betpool.getMatches().containsKey(it.marketId) }
