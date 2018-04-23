@@ -57,6 +57,7 @@ fun main(args: Array<String>) {
 }
 
 fun updateFromMarketData() {
+    BetUpdater(FLOW_TOKEN).run()
     MarketsAPI.fetch()
             .filter { it.startTime > Instant.now().plus(Duration.ofHours(24)) }
             .filter { !State.betpool.getMatches().containsKey(it.marketId) }
