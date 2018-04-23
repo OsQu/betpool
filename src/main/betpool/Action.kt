@@ -18,7 +18,7 @@ sealed class Action(val type: Type) {
     }
     companion object {
         fun fromJSON(jsonString: String): Action {
-            val moshi = Moshi.Builder().build()
+            val moshi = Moshi.Builder().add(Persistence.DateAdapter()).build()
             val actionData = moshi.adapter(ActionData::class.java).fromJson(jsonString)!!
             return moshi.adapter(toActionClass(actionData.type).java).fromJson(jsonString)!!
         }
@@ -27,11 +27,11 @@ sealed class Action(val type: Type) {
             return when(Type.valueOf(typeStr)) {
                 Type.PLAYER_JOIN -> PlayerJoin::class
                 Type.PLAYER_QUIT -> PlayerQuit::class
-                Type.MATCH_NEW -> WithdrawBet::class
+                Type.MATCH_NEW -> MatchNew::class
                 Type.MATCH_START -> MatchStart::class
                 Type.MATCH_END -> MatchEnd::class
                 Type.BET -> Bet::class
-                Type.WITHDRAW_BET -> Bet::class
+                Type.WITHDRAW_BET -> WithdrawBet::class
             }
         }
     }

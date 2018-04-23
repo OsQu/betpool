@@ -1,16 +1,19 @@
+import betfair.Market
 import betfair.MarketsAPI
-import betpool.Betpool
-import betpool.Action
+import betpool.*
 import flowdock.FlowdockAPI
 import org.jooby.Jooby.*
 import org.jooby.Kooby
+import java.time.Duration
+import java.time.Instant
+import java.util.*
 import java.util.concurrent.ScheduledThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 
-const val UPDATE_RATE = 5L
+const val UPDATE_RATE = 1L
 
 val UPDATE_TYPE = TimeUnit.MINUTES
-val FLOW_TOKEN = System.getenv("FLOW_TOKEN") ?: "" //throw Exception("FLOW_TOKEN not defined")
+val FLOW_TOKEN = System.getenv("FLOW_TOKEN") ?: ""
 val persistence = Persistence(System.getenv("LOG_FILE") ?: "/tmp/betpool.log")
 
 object State {
@@ -25,6 +28,10 @@ class App : Kooby({
     }
 
     get("market") {
+        MarketsAPI.fetch()
+    }
+    get("fetchmarkets") {
+        updateFromMarketData()
         MarketsAPI.fetch()
     }
     get("state") {
@@ -50,8 +57,22 @@ fun main(args: Array<String>) {
 }
 
 fun updateFromMarketData() {
-    val markets = MarketsAPI.fetch()
-    // Do the needful actions
+    MarketsAPI.fetch()
+            .filter { it.startTime > Instant.now().plus(Duration.ofHours(24)) }
+            .filter { !State.betpool.getMatches().containsKey(it.marketId) }
+            .forEach({ applyAction(createNewMatchActionFromMarketEvent(it)) })
+}
+
+fun createNewMatchActionFromMarketEvent(event: Market): Action.MatchNew {
+    val odds = Odds(
+            event.odds.mapValues { Competitor(name = it.value.name, odds = (it.value.odds * 100).toInt()) }
+    )
+    return Action.MatchNew(
+            matchId = event.marketId,
+            matchName = event.event,
+            startDate = Date.from(event.startTime),
+            odds = odds
+    )
 }
 
 fun updateFlowdock(action: Action) {
