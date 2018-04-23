@@ -50,8 +50,7 @@ fun main(args: Array<String>) {
 }
 
 fun updateFromMarketData() {
-    val markets = MarketsAPI.fetch()
-    // Do the needful actions
+    BetUpdater(FLOW_TOKEN).run()
 }
 
 fun updateFlowdock(action: Action) {
