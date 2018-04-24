@@ -3,6 +3,7 @@ import betpool.Betpool
 import flowdock.model.Activity
 import flowdock.model.Author
 import flowdock.model.Field
+import flowdock.model.Thread
 import flowdock.model.UpdateAction
 
 class FlowdockInfo(val actionUrl: String, val betpool: Betpool) {
@@ -21,7 +22,7 @@ class FlowdockInfo(val actionUrl: String, val betpool: Betpool) {
             is Action.PlayerQuit -> "left the pool"
             is Action.Bet -> {
                 val match = betpool.getMatches()[action.matchId]!!
-                "bet ${match.getOdds().getOddsWithNames()[action.oddsId]}"
+                "bet ${match.getOdds().getOddsWithNames()[action.oddsId]!!.name}"
             }
             is Action.WithdrawBet -> "withdrew bet"
             is Action.MatchNew -> "New match: ${action.matchName} opened for betting"
@@ -92,22 +93,32 @@ class FlowdockInfo(val actionUrl: String, val betpool: Betpool) {
             flowdock.model.UpdateAction(
                     name = "Bet for ${it.value.name}",
                     target = UpdateAction.Target(
-                            urlTemplate = "$actionUrl/bet/${it.key}",
+                            urlTemplate = "$actionUrl/match/$matchId/bet/${it.key}",
                             httpMethod = "POST"
                     )
             )
         }.plus(flowdock.model.UpdateAction(name = "Withdraw bet", target = UpdateAction.Target(
-                urlTemplate = "$actionUrl/$matchId/withdraw",
+                urlTemplate = "$actionUrl/match/$matchId/withdraw",
                 httpMethod = "POST"
         )))
         val fields = match
                 .getOdds()
                 .getOddsWithNames()
                 .map { Field(label = it.value.name, value = (it.value.odds.toFloat() / 100).toString()) }
+        val status: Thread.Status = {
+           if (match.hasEnded()) {
+               Thread.Status(value = "Finished", color = "purple")
+           } else if(match.isStarted()) {
+               Thread.Status(value = "In play", color = "blue")
+           } else {
+               Thread.Status(value = "Betting", color = "green")
+           }
+        }()
         return flowdock.model.Thread(
                 title = match.matchName,
                 fields = fields,
-                actions = actions
+                actions = actions,
+                status = status
         )
     }
 

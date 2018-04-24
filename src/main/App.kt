@@ -53,6 +53,16 @@ class App : Kooby({
         applyAction(Action.PlayerQuit(playerId = action.agent.url))
         ""
     }.consumes("json")
+    post("/match/:matchId/bet/:oddsId") { req ->
+        val action = Moshi.Builder().build().adapter(IncomingUpdateAction::class.java).fromJson(req.body().value())!!
+        applyAction(Action.Bet(playerId = action.agent.url, matchId = req.param("matchId").value(), oddsId = req.param("oddsId").value()))
+        ""
+    }
+    post("/match/:matchId/withdraw") { req ->
+        val action = Moshi.Builder().build().adapter(IncomingUpdateAction::class.java).fromJson(req.body().value())!!
+        applyAction(Action.WithdrawBet(playerId = action.agent.url, matchId = req.param("matchId").value()))
+        ""
+    }
 })
 
 fun applyAction(action: Action) {
