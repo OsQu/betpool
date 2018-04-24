@@ -2,13 +2,15 @@ package flowdock.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
+data class Field(val label: String, val value: String)
+
 data class Thread(
     val title: String,
     val body: String? = null,
     val externalUrl: String? = null,
     val status: Status? = null,
     val actions: List<ThreadAction>? = null,
-    val fields: Map<String, String>? = null
+    val fields: List<Field>? = null
 ) {
     data class Status(val value: String, val color: String)
 }

@@ -7,10 +7,9 @@ class Matches {
         if (matches.containsKey(action.matchId)) {
             throw IllegalArgumentException("betpool.Match for the id already exists")
         } else {
-            matches[action.matchId] = Match(action.matchId, action.odds, action.startDate)
+            matches[action.matchId] = Match(matchName = action.matchName, odds = action.odds, startDate = action.startDate)
         }
     }
-
     fun addBet(action: Action.Bet) {
         if (!matches.containsKey(action.matchId)) {
             throw IllegalArgumentException("matchId doesn't exist")

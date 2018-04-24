@@ -15,7 +15,6 @@ const val UPDATE_RATE = 1L
 val UPDATE_TYPE = TimeUnit.MINUTES
 val FLOW_TOKEN = System.getenv("FLOW_TOKEN") ?: ""
 val persistence = Persistence(System.getenv("LOG_FILE") ?: "/tmp/betpool.log")
-const val ACTION_URL = "http://139.59.150.87"
 
 object State {
     val betpool = Betpool()
@@ -57,9 +56,8 @@ fun main(args: Array<String>) {
 }
 
 fun updateFromMarketData() {
-    //BetUpdater(FLOW_TOKEN).run()
     MarketsAPI.fetch()
-            .filter { it.startTime > Instant.now().plus(Duration.ofHours(24)) }
+            .filter { it.startTime < Instant.now().plus(Duration.ofHours(24)) }
             .filter { !State.betpool.getMatches().containsKey(it.marketId) }
             .forEach({ applyAction(createNewMatchActionFromMarketEvent(it)) })
 }
@@ -77,5 +75,5 @@ fun createNewMatchActionFromMarketEvent(event: Market): Action.MatchNew {
 }
 
 fun updateFlowdock(action: Action) {
-    FlowdockAPI(FLOW_TOKEN).createActivity(FlowdockInfo(State.betpool).flowdockActivity(action))
+    FlowdockAPI(FLOW_TOKEN).createActivity(FlowdockInfo("http://139.59.150.87", State.betpool).flowdockActivity(action))
 }
