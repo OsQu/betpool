@@ -1,9 +1,12 @@
 import betfair.Market
 import betfair.MarketsAPI
 import betpool.*
+import com.squareup.moshi.Moshi
 import flowdock.FlowdockAPI
+import flowdock.model.IncomingUpdateAction
 import org.jooby.Jooby.*
 import org.jooby.Kooby
+import org.jooby.json.Jackson
 import java.time.Duration
 import java.time.Instant
 import java.util.*
@@ -21,6 +24,7 @@ object State {
 }
 
 class App : Kooby({
+    use(Jackson())
     get("test") {
         val name = param("name").value("Kotlin")
         applyAction(Action.PlayerJoin(playerId = name, playerName = name))
@@ -38,6 +42,16 @@ class App : Kooby({
         val name = param("name").value("Kotlin")
         State.betpool.getCurrentPlayers()
     }
+    post("join") { req ->
+        val action = Moshi.Builder().build().adapter(IncomingUpdateAction::class.java).fromJson(req.body().value())!!
+        applyAction(Action.PlayerJoin(playerId = action.agent.url, playerName = action.agent.name))
+        ""
+    }.consumes("json")
+    post("quit") { req ->
+        val action = Moshi.Builder().build().adapter(IncomingUpdateAction::class.java).fromJson(req.body().value())!!
+        applyAction(Action.PlayerQuit(playerId = action.agent.url))
+        ""
+    }.consumes("json")
 })
 
 fun applyAction(action: Action) {
