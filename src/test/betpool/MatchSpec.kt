@@ -76,11 +76,11 @@ class MatchSpec : Spek({
         match.hasEnded() shouldEqual true
     }
 
-    it("MatchEnd returns a Winning") {
+    it("MatchEnd sets winnings") {
         val match = createMatch()
         match.start(setOf("p1", "p2"))
-        val winnings = match.end("oddsId1")
-        winnings `should be instance of` Winnings::class
+        match.end("oddsId1")
+        match.getWinnings() `should be instance of` Winnings::class
     }
 
     describe("when pool is set") {

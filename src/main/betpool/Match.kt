@@ -7,6 +7,7 @@ class Match(val matchName: String, private val odds: Odds, val startDate: Date) 
     private var pool: Set<String>? = null
     private var bets: HashMap<String, String> = HashMap(mapOf())
     private var winner: String? = null
+    private var winnings: Winnings? = null
 
     fun getPool(): Set<String>? {
         return pool?.toSet()
@@ -28,7 +29,7 @@ class Match(val matchName: String, private val odds: Odds, val startDate: Date) 
         if (pool != null) {
             throw IncompatibleClassChangeError("Betting is closed")
         } else if (!odds.containsId(oddsId)) {
-            throw IllegalArgumentException("OddsId doesn't exist on this match")
+            throw IllegalArgumentException("OddsId $oddsId doesn't exist on this match")
         } else if (bets.containsKey(playerId)) {
             throw IllegalArgumentException("Player has already bet on this match")
         } else {
@@ -54,15 +55,19 @@ class Match(val matchName: String, private val odds: Odds, val startDate: Date) 
         }
     }
 
-    fun end(matchWinner: String): Winnings {
+    fun end(matchWinner: String) {
         if (!isStarted()) {
             throw IllegalArgumentException("Cannot end a match that has not started")
         } else if (!odds.containsId(matchWinner)) {
             throw IllegalArgumentException("Winner is not in the match odds")
         } else {
             winner = matchWinner
-            return Winnings.create(odds = odds, bets = bets, pool = pool!!, winner = matchWinner)
+            winnings = Winnings.create(odds = odds, bets = bets, pool = pool!!, winner = matchWinner)
         }
+    }
+
+    fun getWinnings(): Winnings? {
+        return winnings
     }
 
     fun hasEnded(): Boolean {

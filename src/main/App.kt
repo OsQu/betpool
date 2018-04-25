@@ -40,7 +40,7 @@ class App : Kooby({
         MarketsAPI.fetch()
     }
     get("state") {
-        State.betpool.getCurrentPlayers()
+        State.betpool.getWinnings()
     }
     post("join") { req ->
         val action = Moshi.Builder().build().adapter(IncomingUpdateAction::class.java).fromJson(req.body().value())!!
@@ -62,6 +62,10 @@ class App : Kooby({
         applyAction(Action.WithdrawBet(playerId = action.agent.url, matchId = req.param("matchId").value()))
         ""
     }
+    post("/match/:matchId/end/:winnerId") { req ->
+        applyAction(Action.MatchEnd(matchId = req.param("matchId").value(), winner = req.param("winnerId").value()))
+        ""
+    }
 })
 
 fun applyAction(action: Action) {
@@ -81,7 +85,7 @@ fun main(args: Array<String>) {
 
 fun updateFromMarketData() {
     MarketsAPI.fetch()
-            .filter { it.startTime < Instant.now().plus(Duration.ofHours(24)) }
+            .filter { it.startTime < Instant.now().plus(Duration.ofHours(12)) }
             .filter { !State.betpool.getMatches().containsKey(it.marketId) }
             .forEach({ applyAction(createNewMatchActionFromMarketEvent(it)) })
 }
@@ -99,5 +103,6 @@ fun createNewMatchActionFromMarketEvent(event: Market): Action.MatchNew {
 }
 
 fun updateFlowdock(action: Action) {
-    FlowdockAPI(FLOW_TOKEN).createActivity(FlowdockInfo(WEB_URL, State.betpool).flowdockActivity(action))
+    val activities = FlowdockInfo(WEB_URL, State.betpool).flowdockActivities(action)
+    activities.forEach { FlowdockAPI(FLOW_TOKEN).createActivity(it) }
 }

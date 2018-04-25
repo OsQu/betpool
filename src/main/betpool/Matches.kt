@@ -34,11 +34,11 @@ class Matches {
         }
     }
 
-    fun endMatch(action: Action.MatchEnd): Winnings {
+    fun endMatch(action: Action.MatchEnd) {
         if (!matches.containsKey(action.matchId)) {
             throw IllegalArgumentException("matchId doesn't exist")
         } else {
-            return matches[action.matchId]!!.end("oddsId1")
+            matches[action.matchId]!!.end(action.winner)
         }
     }
 

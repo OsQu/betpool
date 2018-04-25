@@ -1,19 +1,60 @@
 import betpool.Action
 import betpool.Betpool
+import betpool.Winnings
 import flowdock.model.Activity
 import flowdock.model.Author
 import flowdock.model.Field
 import flowdock.model.Thread
 import flowdock.model.UpdateAction
 
-class FlowdockInfo(val actionUrl: String, val betpool: Betpool) {
-    fun flowdockActivity(action: Action): Activity {
-        return Activity(
+class FlowdockInfo(private val actionUrl: String, val betpool: Betpool) {
+    fun flowdockActivities(action: Action): List<Activity> {
+        var activities = listOf(Activity(
                 title = activityTitle(action),
                 author = getAuthor(action),
                 external_thread_id = getThreadId(action),
-                thread = getThread(action)
+                thread = getThread(action),
+                body = activityBody(action)
+        ))
+        if (action is Action.MatchEnd) {
+            activities = activities.plus(dealWinningsActivity(action))
+        }
+        return activities
+    }
+
+    private fun betpoolIntToString(value: Int): String {
+        return (value.toFloat() / 100).toString()
+    }
+
+    private fun winningsToString(winnings: Winnings): String {
+        return winnings.getData().map { "${betpool.playerNames[it.key]}: ${betpoolIntToString(it.value)}"}.joinToString(", ")
+    }
+
+    private fun dealWinningsActivity(action: Action.MatchEnd): Activity {
+        val match = betpool.getMatches()[action.matchId]!!
+        val body = winningsToString(match.getWinnings()!!)
+        return Activity(
+                title = "Winnings dealt from match ${match.matchName}",
+                body = body,
+                author = Author(name = "Betpool"),
+                external_thread_id = "main",
+                thread = getMainThread()
         )
+    }
+
+    private fun activityBody(action: Action): String? {
+        return when(action) {
+            is Action.PlayerJoin -> null
+            is Action.PlayerQuit -> null
+            is Action.Bet -> null
+            is Action.WithdrawBet -> null
+            is Action.MatchNew -> null
+            is Action.MatchStart -> null
+            is Action.MatchEnd -> {
+                val match = betpool.getMatches()[action.matchId]!!
+                winningsToString(match.getWinnings()!!)
+            }
+        }
     }
 
     private fun activityTitle(action: Action): String {
@@ -29,7 +70,7 @@ class FlowdockInfo(val actionUrl: String, val betpool: Betpool) {
             is Action.MatchStart -> "Match play started"
             is Action.MatchEnd -> {
                 val match = betpool.getMatches()[action.matchId]!!
-                "Match ended - ${match.getOdds().getOddsWithNames()[action.winner]} won"
+                "Match ended. ${match.getOdds().getOddsWithNames()[action.winner]!!.name} won"
             }
         }
     }
@@ -84,7 +125,7 @@ class FlowdockInfo(val actionUrl: String, val betpool: Betpool) {
     private fun getCurrentWinningsForFlowdock(): Map<String, String> {
         return betpool.getWinnings()
                 .mapKeys { betpool.playerNames[it.key]!! }
-                .mapValues { (it.value / 100).toString() }
+                .mapValues { (it.value.toFloat() / 100f).toString() }
     }
 
     private fun getMatchThread(matchId: String): flowdock.model.Thread {
