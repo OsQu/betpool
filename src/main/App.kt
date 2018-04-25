@@ -79,9 +79,22 @@ fun applyAction(action: Action) {
 fun main(args: Array<String>) {
     State.betpool.applyActions(persistence.readActions())
     val scheduledExecutorPool = ScheduledThreadPoolExecutor(1)
-    scheduledExecutorPool.scheduleAtFixedRate(::updateFromMarketData, 0, UPDATE_RATE, UPDATE_TYPE)
+    scheduledExecutorPool.scheduleAtFixedRate(::scheduledUpdate, 0, UPDATE_RATE, UPDATE_TYPE)
     run(::App, args)
 }
+
+fun scheduledUpdate() {
+    updateStartedMatches()
+    updateFromMarketData()
+}
+
+fun updateStartedMatches() {
+    State.betpool.getMatches()
+            .filter { !it.value.isStarted() }
+            .filter { it.value.startDate < Date() }
+            .forEach { applyAction(Action.MatchStart(matchId = it.key)) }
+}
+
 
 fun updateFromMarketData() {
     MarketsAPI.fetch()
