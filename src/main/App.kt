@@ -18,7 +18,7 @@ const val UPDATE_RATE = 1L
 val UPDATE_TYPE = TimeUnit.MINUTES
 val FLOW_TOKEN = System.getenv("FLOW_TOKEN") ?: ""
 val WEB_URL = System.getenv("WEB_URL") ?: ""
-val persistence = Persistence(System.getenv("LOG_FILE") ?: "/tmp/betpool.log")
+val persistence = Persistence(System.getenv("LOG_FILE") ?: "/tmp/production.log")
 
 object State {
     val betpool = Betpool()

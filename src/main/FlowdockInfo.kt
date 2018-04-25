@@ -102,6 +102,7 @@ class FlowdockInfo(private val actionUrl: String, val betpool: Betpool) {
     private fun getMainThread(): flowdock.model.Thread {
         return flowdock.model.Thread(
                 title = "Snooker World Championships 2018",
+                body = "Pool for next matches: ${getPoolNames(betpool.getCurrentPlayers())}",
                 fields = getCurrentWinningsForFlowdock().map { Field(label = it.key, value = it.value) },
                 actions = listOf(
                         flowdock.model.UpdateAction(
@@ -120,6 +121,10 @@ class FlowdockInfo(private val actionUrl: String, val betpool: Betpool) {
                         )
                 )
         )
+    }
+
+    private fun getPoolNames(pool: Set<String>): String {
+        return pool.map { betpool.playerNames[it] }.joinToString(", ")
     }
 
     private fun getCurrentWinningsForFlowdock(): Map<String, String> {
@@ -155,8 +160,10 @@ class FlowdockInfo(private val actionUrl: String, val betpool: Betpool) {
                Thread.Status(value = "Betting", color = "green")
            }
         }()
+        val body = "Pool: ${getPoolNames(match.getPool()!!)}"
         return flowdock.model.Thread(
                 title = match.matchName,
+                body = body,
                 fields = fields,
                 actions = actions,
                 status = status
