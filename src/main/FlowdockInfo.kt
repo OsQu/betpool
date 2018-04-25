@@ -14,7 +14,8 @@ class FlowdockInfo(private val actionUrl: String, val betpool: Betpool) {
                 author = getAuthor(action),
                 external_thread_id = getThreadId(action),
                 thread = getThread(action),
-                body = activityBody(action)
+                body = activityBody(action),
+                tags = getTags(action)
         ))
         if (action is Action.MatchEnd) {
             activities = activities.plus(dealWinningsActivity(action))
@@ -96,6 +97,18 @@ class FlowdockInfo(private val actionUrl: String, val betpool: Betpool) {
             is Action.MatchNew -> getMatchThread(action.matchId)
             is Action.MatchStart -> getMatchThread(action.matchId)
             is Action.MatchEnd -> getMatchThread(action.matchId)
+        }
+    }
+
+    private fun getTags(action: Action): List<String> {
+        return when(action) {
+            is Action.PlayerJoin -> listOf()
+            is Action.PlayerQuit -> listOf()
+            is Action.Bet -> listOf()
+            is Action.WithdrawBet -> listOf()
+            is Action.MatchNew -> listOf("@team")
+            is Action.MatchStart -> listOf()
+            is Action.MatchEnd -> listOf()
         }
     }
 

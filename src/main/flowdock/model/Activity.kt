@@ -6,5 +6,6 @@ data class Activity(
   val author: Author,
   val external_thread_id: String,
   val thread: Thread,
-  val event: String = "activity"
+  val event: String = "activity",
+  val tags: List<String> = listOf()
 )
