@@ -26,17 +26,7 @@ object State {
 
 class App : Kooby({
     use(Jackson())
-    get("test") {
-        val name = param("name").value("Kotlin")
-        applyAction(Action.PlayerJoin(playerId = name, playerName = name))
-        "Hello $name!"
-    }
-
     get("market") {
-        MarketsAPI.fetch()
-    }
-    get("fetchmarkets") {
-        updateFromMarketData()
         MarketsAPI.fetch()
     }
     get("state") {
