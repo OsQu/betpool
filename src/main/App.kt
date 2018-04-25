@@ -40,7 +40,6 @@ class App : Kooby({
         MarketsAPI.fetch()
     }
     get("state") {
-        val name = param("name").value("Kotlin")
         State.betpool.getCurrentPlayers()
     }
     post("join") { req ->

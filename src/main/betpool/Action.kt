@@ -3,6 +3,7 @@ package betpool
 import java.util.Date
 import kotlin.reflect.KClass
 import com.squareup.moshi.Moshi
+import java.time.Instant
 
 data class ActionData(val type: String)
 
@@ -18,7 +19,7 @@ sealed class Action(val type: Type) {
     }
     companion object {
         fun fromJSON(jsonString: String): Action {
-            val moshi = Moshi.Builder().add(Persistence.DateAdapter()).build()
+            val moshi = Moshi.Builder().add(Persistence.DateAdapter()).add(Persistence.InstantAdapter()).build()
             val actionData = moshi.adapter(ActionData::class.java).fromJson(jsonString)!!
             return moshi.adapter(toActionClass(actionData.type).java).fromJson(jsonString)!!
         }
@@ -35,11 +36,11 @@ sealed class Action(val type: Type) {
             }
         }
     }
-    data class MatchNew(val matchId: String, val matchName: String, val odds: Odds, val startDate: Date): Action(Type.MATCH_NEW)
-    data class MatchStart(val matchId: String): Action(Type.MATCH_START)
-    data class MatchEnd(val matchId: String, val winner: String): Action(Type.MATCH_END)
-    data class PlayerJoin(val playerId: String, val playerName: String): Action(Type.PLAYER_JOIN)
-    data class PlayerQuit(val playerId: String): Action(Type.PLAYER_QUIT)
-    data class Bet(val matchId: String, val playerId: String, val oddsId: String): Action(Type.BET)
-    data class WithdrawBet(val matchId: String, val playerId: String): Action(Type.WITHDRAW_BET)
+    data class MatchNew(val matchId: String, val matchName: String, val odds: Odds, val startDate: Date, val time: Instant = Instant.now()): Action(Type.MATCH_NEW)
+    data class MatchStart(val matchId: String, val time: Instant = Instant.now()): Action(Type.MATCH_START)
+    data class MatchEnd(val matchId: String, val winner: String, val time: Instant = Instant.now()): Action(Type.MATCH_END)
+    data class PlayerJoin(val playerId: String, val playerName: String, val time: Instant = Instant.now()): Action(Type.PLAYER_JOIN)
+    data class PlayerQuit(val playerId: String, val time: Instant = Instant.now()): Action(Type.PLAYER_QUIT)
+    data class Bet(val matchId: String, val playerId: String, val oddsId: String, val time: Instant = Instant.now()): Action(Type.BET)
+    data class WithdrawBet(val matchId: String, val playerId: String, val time: Instant = Instant.now()): Action(Type.WITHDRAW_BET)
 }
