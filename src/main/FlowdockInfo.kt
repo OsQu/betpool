@@ -180,7 +180,11 @@ class FlowdockInfo(private val actionUrl: String, val betpool: Betpool) {
                Thread.Status(value = "Betting", color = "green")
            }
         }()
-        val body = "Pool: ${getPoolNames(match.getPool()!!)}"
+        var body = ""
+        val pool = match.getPool()
+        if (pool != null) {
+            body = "Pool: ${getPoolNames(pool)}"
+        }
         return flowdock.model.Thread(
                 title = match.matchName,
                 body = body,
