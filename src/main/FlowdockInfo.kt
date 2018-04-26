@@ -108,7 +108,7 @@ class FlowdockInfo(private val actionUrl: String, val betpool: Betpool) {
             is Action.PlayerQuit -> listOf()
             is Action.Bet -> listOf()
             is Action.WithdrawBet -> listOf()
-            is Action.MatchNew -> listOf()
+            is Action.MatchNew -> listOf("@team")
             is Action.MatchStart -> listOf()
             is Action.MatchEnd -> listOf()
         }
