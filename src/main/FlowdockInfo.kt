@@ -108,7 +108,7 @@ class FlowdockInfo(private val actionUrl: String, val betpool: Betpool) {
             is Action.PlayerQuit -> listOf()
             is Action.Bet -> listOf()
             is Action.WithdrawBet -> listOf()
-            is Action.MatchNew -> listOf("@team")
+            is Action.MatchNew -> listOf()
             is Action.MatchStart -> listOf()
             is Action.MatchEnd -> listOf()
         }
@@ -150,18 +150,21 @@ class FlowdockInfo(private val actionUrl: String, val betpool: Betpool) {
 
     private fun getMatchThread(matchId: String): flowdock.model.Thread {
         val match = betpool.getMatches()[matchId]!!
-        val actions = match.getOdds().getOddsWithNames().map {
-            flowdock.model.UpdateAction(
-                    name = "Bet for ${it.value.name}",
-                    target = UpdateAction.Target(
-                            urlTemplate = "$actionUrl/match/$matchId/bet/${it.key}",
-                            httpMethod = "POST"
-                    )
-            )
-        }.plus(flowdock.model.UpdateAction(name = "Withdraw bet", target = UpdateAction.Target(
-                urlTemplate = "$actionUrl/match/$matchId/withdraw",
-                httpMethod = "POST"
-        )))
+        var actions = listOf<flowdock.model.UpdateAction>()
+        if (!match.isStarted()) {
+            actions = match.getOdds().getOddsWithNames().map {
+                flowdock.model.UpdateAction(
+                        name = "Bet for ${it.value.name}",
+                        target = UpdateAction.Target(
+                                urlTemplate = "$actionUrl/match/$matchId/bet/${it.key}",
+                                httpMethod = "POST"
+                        )
+                )
+            }.plus(flowdock.model.UpdateAction(name = "Withdraw bet", target = UpdateAction.Target(
+                    urlTemplate = "$actionUrl/match/$matchId/withdraw",
+                    httpMethod = "POST"
+            )))
+        }
         val oddsFields = match
                 .getOdds()
                 .getOddsWithNames()
