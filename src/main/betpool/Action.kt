@@ -1,6 +1,5 @@
 package betpool
 
-import java.util.Date
 import kotlin.reflect.KClass
 import com.squareup.moshi.Moshi
 import java.time.Instant
@@ -19,7 +18,7 @@ sealed class Action(val type: Type) {
     }
     companion object {
         fun fromJSON(jsonString: String): Action {
-            val moshi = Moshi.Builder().add(Persistence.DateAdapter()).add(Persistence.InstantAdapter()).build()
+            val moshi = Moshi.Builder().add(Persistence.InstantAdapter()).build()
             val actionData = moshi.adapter(ActionData::class.java).fromJson(jsonString)!!
             return moshi.adapter(toActionClass(actionData.type).java).fromJson(jsonString)!!
         }
@@ -36,7 +35,7 @@ sealed class Action(val type: Type) {
             }
         }
     }
-    data class MatchNew(val matchId: String, val matchName: String, val odds: Odds, val startDate: Date, val time: Instant = Instant.now()): Action(Type.MATCH_NEW)
+    data class MatchNew(val matchId: String, val matchName: String, val odds: Odds, val startDate: Instant, val time: Instant = Instant.now()): Action(Type.MATCH_NEW)
     data class MatchStart(val matchId: String, val time: Instant = Instant.now()): Action(Type.MATCH_START)
     data class MatchEnd(val matchId: String, val winner: String, val time: Instant = Instant.now()): Action(Type.MATCH_END)
     data class PlayerJoin(val playerId: String, val playerName: String, val time: Instant = Instant.now()): Action(Type.PLAYER_JOIN)

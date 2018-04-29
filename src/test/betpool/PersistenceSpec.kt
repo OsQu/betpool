@@ -7,7 +7,7 @@ import org.amshove.kluent.shouldEqual
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.it
 import java.io.FileWriter
-import java.util.*
+import java.time.Instant
 
 class PersistenceSpec : Spek({
     it("serializes and deserializes actions to/from file") {
@@ -19,7 +19,7 @@ class PersistenceSpec : Spek({
         val action2 = Action.MatchNew(
                 matchId = "testId1",
                 matchName = "Ronnie v Selby",
-                startDate = Date(),
+                startDate = Instant.now(),
                 odds = odds
         )
         persistence.logAction(action1)

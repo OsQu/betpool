@@ -5,7 +5,7 @@ import org.amshove.kluent.shouldContainAll
 import org.amshove.kluent.shouldThrow
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.it
-import java.util.Date
+import java.time.Instant
 
 class MatchesSpec : Spek({
     fun createOdds(): Odds {
@@ -14,7 +14,7 @@ class MatchesSpec : Spek({
         )
     }
     fun newMatchAction(): Action.MatchNew {
-        return Action.MatchNew(matchId = "testId", matchName = "Ronnie vs. Selby", odds = createOdds(), startDate = Date())
+        return Action.MatchNew(matchId = "testId", matchName = "Ronnie vs. Selby", odds = createOdds(), startDate = Instant.now())
     }
     it("MatchNew action adds a match") {
         val matches = Matches()

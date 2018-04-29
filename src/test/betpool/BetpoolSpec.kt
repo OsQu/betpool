@@ -4,7 +4,7 @@ import org.amshove.kluent.shouldContainAll
 import org.amshove.kluent.shouldEqual
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.it
-import java.util.Date
+import java.time.Instant
 
 class BetpoolSpec : Spek({
     fun createOdds(): Odds {
@@ -13,7 +13,7 @@ class BetpoolSpec : Spek({
         )
     }
     fun newMatchAction(): Action.MatchNew {
-        return Action.MatchNew(matchId = "testId", matchName = "Ronnie vs. Selby", odds = createOdds(), startDate = Date())
+        return Action.MatchNew(matchId = "testId", matchName = "Ronnie vs. Selby", odds = createOdds(), startDate = Instant.now())
     }
     it("PlayerJoin action adds a player to the pool") {
         val betpool = Betpool()
@@ -77,7 +77,7 @@ class BetpoolSpec : Spek({
         betpool.applyAction(Action.MatchStart(matchId = "testId"))
         betpool.applyAction(Action.MatchEnd(matchId = "testId", winner = "oddsId1"))
         betpool.getWinnings() shouldEqual mapOf("first" to 37, "second" to -37)
-        betpool.applyAction(Action.MatchNew(matchId = "testId2", matchName = "Second match", odds = createOdds(), startDate = Date()))
+        betpool.applyAction(Action.MatchNew(matchId = "testId2", matchName = "Second match", odds = createOdds(), startDate = Instant.now()))
         betpool.applyAction(Action.Bet(playerId = "first", matchId = "testId2", oddsId = "oddsId1"))
         betpool.applyAction(Action.MatchStart(matchId = "testId2"))
         betpool.applyAction(Action.MatchEnd(matchId = "testId2", winner = "oddsId1"))

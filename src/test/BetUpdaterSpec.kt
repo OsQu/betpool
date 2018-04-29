@@ -1,8 +1,4 @@
-import betfair.MarketsAPI
-import betpool.Action
 import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.kittinunf.fuel.core.Client
@@ -13,11 +9,9 @@ import com.nhaarman.mockito_kotlin.*
 import fixtures.flowdockResponse
 import fixtures.marketsApiResponse
 import flowdock.model.Activity
-import org.amshove.kluent.shouldEqual
 import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.xit
+import org.jetbrains.spek.api.dsl.xdescribe
 import java.io.ByteArrayOutputStream
 import java.net.URL
 
@@ -86,7 +80,7 @@ class BetUpdaterSpec : Spek({
         FuelManager.instance.client = oldClient
     }
 
-    describe("run") {
+    xdescribe("run") {
         whenever(client.executeRequest(
             argThat { this.url == URL(betfair.URL) }
         )).thenReturn(Response(

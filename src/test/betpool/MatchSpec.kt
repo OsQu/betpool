@@ -6,14 +6,14 @@ import org.amshove.kluent.shouldThrow
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import java.util.Date
+import java.time.Instant
 
 class MatchSpec : Spek({
     fun createMatch(): Match {
         val odds = Odds(
                 mapOf("oddsId1" to Competitor(name = "Ronnie", odds = 150), "oddsId2" to Competitor(name = "Selby", odds = 200))
         )
-        return Match("id", odds, Date())
+        return Match("id", odds, Instant.now())
     }
 
     it("addBet adds a bet") {

@@ -9,7 +9,6 @@ import org.jooby.Kooby
 import org.jooby.json.Jackson
 import java.time.Duration
 import java.time.Instant
-import java.util.*
 import java.util.concurrent.ScheduledThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 
@@ -81,7 +80,7 @@ fun scheduledUpdate() {
 fun updateStartedMatches() {
     State.betpool.getMatches()
             .filter { !it.value.isStarted() }
-            .filter { it.value.startDate < Date() }
+            .filter { it.value.startDate < Instant.now() }
             .forEach { applyAction(Action.MatchStart(matchId = it.key)) }
 }
 
@@ -100,7 +99,7 @@ fun createNewMatchActionFromMarketEvent(event: Market): Action.MatchNew {
     return Action.MatchNew(
             matchId = event.marketId,
             matchName = event.event,
-            startDate = Date.from(event.startTime),
+            startDate = Instant.from(event.startTime),
             odds = odds
     )
 }
