@@ -6,8 +6,7 @@ import flowdock.model.Author
 import flowdock.model.Field
 import flowdock.model.Thread
 import flowdock.model.UpdateAction
-import java.text.SimpleDateFormat
-import java.util.*
+import java.time.format.DateTimeFormatterBuilder
 
 class FlowdockInfo(private val actionUrl: String, val betpool: Betpool) {
     fun flowdockActivities(action: Action): List<Activity> {
@@ -169,9 +168,7 @@ class FlowdockInfo(private val actionUrl: String, val betpool: Betpool) {
                 .getOdds()
                 .getOddsWithNames()
                 .map { Field(label = it.value.name, value = (it.value.odds.toFloat() / 100).toString()) }
-        val tz = TimeZone.getTimeZone("UTC")
-        val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
-        df.timeZone = tz
+        val df = DateTimeFormatterBuilder().toFormatter()
         var fields = listOf(Field(label = "Start time", value = "<time datetime=\"${df.format(match.startDate)}\">${df.format(match.startDate)}</time>"))
         fields = fields.plus(oddsFields)
         val status: Thread.Status = {
