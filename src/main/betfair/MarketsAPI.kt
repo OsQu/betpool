@@ -10,4 +10,10 @@ object MarketsAPI {
         val (_, _, odds) = Fuel.get(URL).responseObject<List<Market>>()
         return odds.get()
     }
+
+    fun fetchWinners(matchIds: List<String>): List<MarketWinner> {
+        val params = listOf("market_ids" to matchIds.joinToString(","))
+        val (_, _, winners) = Fuel.get("$URL/winner", params).responseObject<List<MarketWinner>>()
+        return winners.get()
+    }
 }

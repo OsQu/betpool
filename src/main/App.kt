@@ -69,12 +69,24 @@ fun main(args: Array<String>) {
     State.betpool.applyActions(persistence.readActions())
     val scheduledExecutorPool = ScheduledThreadPoolExecutor(1)
     scheduledExecutorPool.scheduleAtFixedRate(::scheduledUpdate, 0, UPDATE_RATE, UPDATE_TYPE)
+    scheduledExecutorPool.scheduleAtFixedRate(::fetchMatchWinners, 0, 5L, UPDATE_TYPE)
     run(::App, args)
 }
 
 fun scheduledUpdate() {
     updateStartedMatches()
     updateFromMarketData()
+}
+
+fun fetchMatchWinners() {
+    val inProgressMatchIds = State.betpool.getMatches()
+            .filter { it.value.isStarted() && !it.value.hasEnded() }
+            .map { it.key }
+    MarketsAPI.fetchWinners(inProgressMatchIds).forEach {
+        if (it.winner != null) {
+            applyAction(Action.MatchEnd(matchId = it.marketId, winner = it.winner))
+        }
+    }
 }
 
 fun updateStartedMatches() {

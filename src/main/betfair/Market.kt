@@ -13,6 +13,8 @@ data class Market(
 }
 
 data class Runner(
-    val name: String,
-    val odds: Double
+        val name: String,
+        val odds: Double
 )
+
+data class MarketWinner(val marketId: String, val winner: String?)
