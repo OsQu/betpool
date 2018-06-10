@@ -1,11 +1,11 @@
 import betfair.Market
 import betfair.MarketsAPI
 import betpool.*
-import com.squareup.moshi.Moshi
 import flowdock.FlowdockAPI
 import flowdock.model.IncomingUpdateAction
 import org.jooby.Jooby.*
 import org.jooby.Kooby
+import org.jooby.Request
 import org.jooby.json.Jackson
 import java.time.Duration
 import java.time.Instant
@@ -13,7 +13,6 @@ import java.util.concurrent.ScheduledThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 
 const val UPDATE_RATE = 1L
-
 val UPDATE_TYPE = TimeUnit.MINUTES
 val FLOW_TOKEN = System.getenv("FLOW_TOKEN") ?: ""
 val WEB_URL = System.getenv("WEB_URL") ?: ""
@@ -21,6 +20,10 @@ val persistence = Persistence(System.getenv("LOG_FILE") ?: "/tmp/production.log"
 
 object State {
     val betpool = Betpool()
+}
+
+fun createActionFromRequest(request: Request): IncomingUpdateAction  {
+    return IncomingUpdateAction.build(request.header("Flowdock-Token").value(), request.body().value())
 }
 
 class App : Kooby({
@@ -32,22 +35,22 @@ class App : Kooby({
         State.betpool.getWinnings()
     }
     post("join") { req ->
-        val action = Moshi.Builder().build().adapter(IncomingUpdateAction::class.java).fromJson(req.body().value())!!
+        val action = createActionFromRequest(req)
         applyAction(Action.PlayerJoin(playerId = action.agent.url, playerName = action.agent.name))
         ""
     }.consumes("json")
     post("quit") { req ->
-        val action = Moshi.Builder().build().adapter(IncomingUpdateAction::class.java).fromJson(req.body().value())!!
+        val action = createActionFromRequest(req)
         applyAction(Action.PlayerQuit(playerId = action.agent.url))
         ""
     }.consumes("json")
     post("/match/:matchId/bet/:oddsId") { req ->
-        val action = Moshi.Builder().build().adapter(IncomingUpdateAction::class.java).fromJson(req.body().value())!!
+        val action = createActionFromRequest(req)
         applyAction(Action.Bet(playerId = action.agent.url, matchId = req.param("matchId").value(), oddsId = req.param("oddsId").value()))
         ""
     }
     post("/match/:matchId/withdraw") { req ->
-        val action = Moshi.Builder().build().adapter(IncomingUpdateAction::class.java).fromJson(req.body().value())!!
+        val action = createActionFromRequest(req)
         applyAction(Action.WithdrawBet(playerId = action.agent.url, matchId = req.param("matchId").value()))
         ""
     }
