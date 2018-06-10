@@ -26,7 +26,7 @@ class MatchSpec : Spek({
         var match = createMatch()
         match.addBet(playerId = "p1", oddsId = "oddsId1")
         val func = { match.addBet(playerId = "p1", oddsId = "oddsId1") }
-        func shouldThrow IllegalArgumentException::class
+        func shouldThrow IllegalStateException::class
     }
 
     it("addBet throws if no oddsID found on the match") {
@@ -46,7 +46,7 @@ class MatchSpec : Spek({
     it("removeBet throws if the player doesn't have a bet") {
         var match = createMatch()
         val func = { match.removeBet(playerId = "p1") }
-        func shouldThrow IllegalArgumentException::class
+        func shouldThrow IllegalStateException::class
     }
 
     it("start sets the pool for the match") {
@@ -58,7 +58,7 @@ class MatchSpec : Spek({
     it("matchEnd throws is match has not started") {
         var match = createMatch()
         val func = { match.end("oddsId1") }
-        func shouldThrow IllegalArgumentException::class
+        func shouldThrow IllegalStateException::class
     }
 
     it("matchEnd throws is winnerId is not in the odds") {
@@ -88,14 +88,14 @@ class MatchSpec : Spek({
             var match = createMatch()
             match.start(setOf("p1", "p2"))
             val func = { match.start(setOf("p1", "p3")) }
-            func shouldThrow IncompatibleClassChangeError::class
+            func shouldThrow IllegalStateException::class
         }
 
         it("addBet throws") {
             var match = createMatch()
             match.start(setOf("p1", "p2"))
             val func = { match.addBet(playerId = "p1", oddsId = "oddsId1")}
-            func shouldThrow IncompatibleClassChangeError::class
+            func shouldThrow IllegalStateException::class
         }
 
         it("removeBet throws") {
@@ -103,7 +103,17 @@ class MatchSpec : Spek({
             match.addBet(playerId = "p1", oddsId = "oddsId1")
             match.start(setOf("p1", "p2"))
             val func = { match.removeBet(playerId = "p1")}
-            func shouldThrow IncompatibleClassChangeError::class
+            func shouldThrow IllegalStateException::class
+        }
+    }
+
+    describe("when match is ended") {
+        it("start throws") {
+            var match = createMatch()
+            match.start(setOf("p1", "p2"))
+            match.end("oddsId1")
+            val func = { match.end("oddsId1") }
+            func shouldThrow IllegalStateException::class
         }
     }
 })

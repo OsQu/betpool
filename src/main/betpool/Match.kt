@@ -27,11 +27,11 @@ class Match(val matchName: String, private val odds: Odds, val startDate: Instan
 
     fun addBet(playerId: String, oddsId: String) {
         if (pool != null) {
-            throw IncompatibleClassChangeError("Betting is closed")
+            throw IllegalStateException("Betting is closed")
         } else if (!odds.containsId(oddsId)) {
             throw IllegalArgumentException("OddsId $oddsId doesn't exist on this match")
         } else if (bets.containsKey(playerId)) {
-            throw IllegalArgumentException("Player has already bet on this match")
+            throw IllegalStateException("Player has already bet on this match")
         } else {
             bets[playerId] = oddsId;
         }
@@ -39,11 +39,11 @@ class Match(val matchName: String, private val odds: Odds, val startDate: Instan
 
     fun removeBet(playerId: String) {
         if (pool != null) {
-            throw IncompatibleClassChangeError("Betting is closed")
+            throw IllegalStateException("Betting is closed")
         } else if (bets.containsKey(playerId)) {
             bets.remove(playerId);
         } else {
-            throw IllegalArgumentException("Player has not bet to this match")
+            throw IllegalStateException("Player has not bet to this match")
         }
     }
 
@@ -51,15 +51,17 @@ class Match(val matchName: String, private val odds: Odds, val startDate: Instan
         if (pool == null) {
             pool = closedPool
         } else {
-            throw IncompatibleClassChangeError("Changing the betting pool is not allowed")
+            throw IllegalStateException("Match has already started")
         }
     }
 
     fun end(matchWinner: String) {
         if (!isStarted()) {
-            throw IllegalArgumentException("Cannot end a match that has not started")
+            throw IllegalStateException("Cannot end a match that has not started")
         } else if (!odds.containsId(matchWinner)) {
             throw IllegalArgumentException("Winner is not in the match odds")
+        } else if (hasEnded()) {
+          throw  IllegalStateException("Match has already ended")
         } else {
             winner = matchWinner
             winnings = Winnings.create(odds = odds, bets = bets, pool = pool!!, winner = matchWinner)
