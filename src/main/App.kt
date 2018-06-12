@@ -102,7 +102,7 @@ fun updateStartedMatches() {
 
 fun updateFromMarketData() {
     MarketsAPI.fetch()
-            .filter { it.startTime < Instant.now().plus(Duration.ofHours(12)) }
+            .filter { it.startTime < Instant.now().plus(Duration.ofHours(24)) }
             .filter { !State.betpool.getMatches().containsKey(it.marketId) }
             .forEach({ applyAction(createNewMatchActionFromMarketEvent(it)) })
 }
