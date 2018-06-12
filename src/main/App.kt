@@ -54,10 +54,6 @@ class App : Kooby({
         applyAction(Action.WithdrawBet(playerId = action.agent.url, matchId = req.param("matchId").value()))
         ""
     }
-    post("/match/:matchId/end/:winnerId") { req ->
-        applyAction(Action.MatchEnd(matchId = req.param("matchId").value(), winner = req.param("winnerId").value()))
-        ""
-    }
 })
 
 fun applyAction(action: Action) {
