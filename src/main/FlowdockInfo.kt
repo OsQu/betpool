@@ -169,8 +169,8 @@ class FlowdockInfo(private val actionUrl: String, val betpool: Betpool) {
                 .getOdds()
                 .getOddsWithNames()
                 .map { Field(label = it.value.name, value = (it.value.odds.toFloat() / 100).toString()) }
-        val df = DateTimeFormatterBuilder().toFormatter()
-        var fields = listOf(Field(label = "Start time", value = "<time datetime=\"${df.format(match.startDate)}\">${df.format(match.startDate)}</time>"))
+        val df = DateTimeFormatterBuilder().appendInstant(0).toFormatter()
+        var fields = listOf(Field(label = "Start time", value = df.format(match.startDate)))
         fields = fields.plus(oddsFields)
         val status: Thread.Status = {
            if (match.hasEnded()) {
