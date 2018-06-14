@@ -16,7 +16,9 @@ import java.util.concurrent.TimeUnit
 
 const val UPDATE_RATE = 1L
 val UPDATE_TYPE = TimeUnit.MINUTES
-val FLOW_TOKEN = System.getenv("FLOW_TOKEN") ?: ""
+
+
+val FLOW_TOKENS = setOf(System.getenv("FLOW_TOKEN_1") ?: "", System.getenv("FLOW_TOKEN_2") ?: "")
 val WEB_URL = System.getenv("WEB_URL") ?: ""
 val persistence = Persistence(System.getenv("LOG_FILE") ?: "/tmp/production.log")
 
@@ -46,7 +48,7 @@ class App : Kooby({
                 thread = FlowdockInfo(WEB_URL, State.betpool).getMainThread(),
                 external_thread_id = "main"
         )
-        FlowdockAPI(FLOW_TOKEN).createActivity(activity)
+        FlowdockAPI(FLOW_TOKENS).createActivity(activity)
     }
     post("join") { req ->
         val action = createActionFromRequest(req)
@@ -131,5 +133,5 @@ fun createNewMatchActionFromMarketEvent(event: Market): Action.MatchNew {
 
 fun updateFlowdock(action: Action) {
     val activities = FlowdockInfo(WEB_URL, State.betpool).flowdockActivities(action)
-    activities.forEach { FlowdockAPI(FLOW_TOKEN).createActivity(it) }
+    activities.forEach { FlowdockAPI(FLOW_TOKENS).createActivity(it) }
 }
