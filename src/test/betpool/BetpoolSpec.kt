@@ -30,6 +30,19 @@ class BetpoolSpec : Spek({
         betpool.getCurrentPlayers() shouldEqual setOf("second")
     }
 
+    it("PlayerQuit removes player's unstarted bets") {
+        val betpool = Betpool()
+        betpool.applyAction(Action.PlayerJoin("first", "Sampo"))
+        betpool.applyAction(newMatchAction())
+        betpool.applyAction(Action.MatchNew(matchId = "testId2", matchName = "Ronnie vs. Selby", odds = createOdds(), startDate = Instant.now()))
+        betpool.applyAction(Action.Bet(playerId = "first", matchId = "testId", oddsId = "oddsId1"))
+        betpool.applyAction(Action.Bet(playerId = "first", matchId = "testId2", oddsId = "oddsId1"))
+        betpool.applyAction(Action.MatchStart("testId2"))
+        betpool.applyAction(Action.PlayerQuit("first"))
+        betpool.getMatches()["testId"]!!.getBets().containsKey("first") shouldEqual false
+        betpool.getMatches()["testId2"]!!.getBets().containsKey("first") shouldEqual true
+    }
+
     it("MatchNew action adds a match") {
         val betpool = Betpool()
         betpool.applyAction(newMatchAction())

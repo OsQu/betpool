@@ -39,6 +39,10 @@ class Betpool {
         if (!currentPlayers.contains(action.playerId)) {
             throw IllegalArgumentException("Player doesn't exists")
         } else {
+            matches
+                    .getMatches()
+                    .filterValues { !it.isStarted() &&  it.hasPlayerBet(action.playerId)}
+                    .forEach { it.value.removeBet(action.playerId) }
             currentPlayers = currentPlayers.minus(action.playerId)
         }
     }

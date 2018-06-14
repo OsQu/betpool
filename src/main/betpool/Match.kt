@@ -37,10 +37,14 @@ class Match(val matchName: String, private val odds: Odds, val startDate: Instan
         }
     }
 
+    fun hasPlayerBet(playerId: String): Boolean {
+        return bets.containsKey(playerId)
+    }
+
     fun removeBet(playerId: String) {
         if (pool != null) {
             throw IllegalStateException("Betting is closed")
-        } else if (bets.containsKey(playerId)) {
+        } else if (hasPlayerBet(playerId)) {
             bets.remove(playerId);
         } else {
             throw IllegalStateException("Player has not bet to this match")

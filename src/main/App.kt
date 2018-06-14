@@ -17,7 +17,6 @@ import java.util.concurrent.TimeUnit
 const val UPDATE_RATE = 1L
 val UPDATE_TYPE = TimeUnit.MINUTES
 
-
 val FLOW_TOKENS = setOf(System.getenv("FLOW_TOKEN_1") ?: "", System.getenv("FLOW_TOKEN_2") ?: "")
 val WEB_URL = System.getenv("WEB_URL") ?: ""
 val persistence = Persistence(System.getenv("LOG_FILE") ?: "/tmp/production.log")
