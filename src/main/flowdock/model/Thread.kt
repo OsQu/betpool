@@ -7,7 +7,7 @@ data class Field(val label: String, val value: String)
 data class Thread(
     val title: String,
     val body: String? = null,
-    val externalUrl: String? = null,
+    val external_url: String? = null,
     val status: Status? = null,
     val actions: List<ThreadAction>? = null,
     val fields: List<Field>? = null

@@ -2,6 +2,8 @@ import betfair.Market
 import betfair.MarketsAPI
 import betpool.*
 import flowdock.FlowdockAPI
+import flowdock.model.Activity
+import flowdock.model.Author
 import flowdock.model.IncomingUpdateAction
 import org.jooby.Jooby.*
 import org.jooby.Kooby
@@ -32,7 +34,19 @@ class App : Kooby({
         MarketsAPI.fetch()
     }
     get("state") {
-        State.betpool.getWinnings()
+        State.betpool.getWinnings().mapKeys { State.betpool.playerNames.getOrDefault(it.key, "Unknown") }
+    }
+    get("players") {
+        State.betpool.getCurrentPlayers().map { State.betpool.playerNames.getOrDefault(it, "Unknown") }
+    }
+    post("start") {
+        val activity = Activity(
+                title = "Betpool started for World cup 2018!",
+                author = Author(name = "Betpool"),
+                thread = FlowdockInfo(WEB_URL, State.betpool).getMainThread(),
+                external_thread_id = "main"
+        )
+        FlowdockAPI(FLOW_TOKEN).createActivity(activity)
     }
     post("join") { req ->
         val action = createActionFromRequest(req)

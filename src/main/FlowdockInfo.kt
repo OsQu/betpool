@@ -24,6 +24,31 @@ class FlowdockInfo(private val actionUrl: String, val betpool: Betpool) {
         return activities
     }
 
+    fun getMainThread(): flowdock.model.Thread {
+        return flowdock.model.Thread(
+                title = "World cup 2018",
+                body = "Pool for next matches: ${getPoolNames(betpool.getCurrentPlayers())}",
+                fields = getCurrentWinningsForFlowdock().map { Field(label = it.key, value = it.value) },
+                external_url = "$actionUrl/state",
+                actions = listOf(
+                        flowdock.model.UpdateAction(
+                                name = "Join pool",
+                                target = UpdateAction.Target(
+                                        urlTemplate = "$actionUrl/join",
+                                        httpMethod = "POST"
+                                )
+                        ),
+                        flowdock.model.UpdateAction(
+                                name = "Quit pool",
+                                target = UpdateAction.Target(
+                                        urlTemplate = "$actionUrl/quit",
+                                        httpMethod = "POST"
+                                )
+                        )
+                )
+        )
+    }
+
     private fun betpoolIntToString(value: Int): String {
         return (value.toFloat() / 100).toString()
     }
@@ -111,30 +136,6 @@ class FlowdockInfo(private val actionUrl: String, val betpool: Betpool) {
             is Action.MatchStart -> listOf()
             is Action.MatchEnd -> listOf()
         }
-    }
-
-    private fun getMainThread(): flowdock.model.Thread {
-        return flowdock.model.Thread(
-                title = "Snooker World Championships 2018",
-                body = "Pool for next matches: ${getPoolNames(betpool.getCurrentPlayers())}",
-                fields = getCurrentWinningsForFlowdock().map { Field(label = it.key, value = it.value) },
-                actions = listOf(
-                        flowdock.model.UpdateAction(
-                                name = "Join pool",
-                                target = UpdateAction.Target(
-                                        urlTemplate = "$actionUrl/join",
-                                        httpMethod = "POST"
-                                )
-                        ),
-                        flowdock.model.UpdateAction(
-                                name = "Quit pool",
-                                target = UpdateAction.Target(
-                                        urlTemplate = "$actionUrl/quit",
-                                        httpMethod = "POST"
-                                )
-                        )
-                )
-        )
     }
 
     private fun getPoolNames(pool: Set<String>): String {
