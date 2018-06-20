@@ -20,6 +20,7 @@ val UPDATE_TYPE = TimeUnit.MINUTES
 val FLOW_TOKENS = setOf(System.getenv("FLOW_TOKEN_1") ?: "", System.getenv("FLOW_TOKEN_2") ?: "")
 val WEB_URL = System.getenv("WEB_URL") ?: ""
 val persistence = Persistence(System.getenv("LOG_FILE") ?: "/tmp/production.log")
+val BET_SIZE = Integer.parseInt(System.getenv("BET_SIZE") ?: "10")
 
 object State {
     val betpool = Betpool()
@@ -35,7 +36,9 @@ class App : Kooby({
         MarketsAPI.fetch()
     }
     get("state") {
-        State.betpool.getWinnings().mapKeys { State.betpool.playerNames.getOrDefault(it.key, "Unknown") }
+        State.betpool.getWinnings()
+                .mapKeys { State.betpool.playerNames.getOrDefault(it.key, "Unknown") }
+                .mapValues { (BET_SIZE.toFloat() * it.value.toFloat() / 100f).toString() + "€" }
     }
     get("players") {
         State.betpool.getCurrentPlayers().map { State.betpool.playerNames.getOrDefault(it, "Unknown") }
@@ -72,10 +75,10 @@ class App : Kooby({
 })
 
 fun applyAction(action: Action) {
-    synchronized(State, {
+    synchronized(State) {
         State.betpool.applyAction(action)
         persistence.logAction(action)
-    })
+    }
     updateFlowdock(action)
 }
 
@@ -115,7 +118,7 @@ fun updateFromMarketData() {
     MarketsAPI.fetch()
             .filter { it.startTime < Instant.now().plus(Duration.ofHours(24)) }
             .filter { !State.betpool.getMatches().containsKey(it.marketId) }
-            .forEach({ applyAction(createNewMatchActionFromMarketEvent(it)) })
+            .forEach { applyAction(createNewMatchActionFromMarketEvent(it)) }
 }
 
 fun createNewMatchActionFromMarketEvent(event: Market): Action.MatchNew {

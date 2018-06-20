@@ -5,7 +5,7 @@ import com.squareup.moshi.Moshi
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 
-val OAUTH_APP_SECRET = System.getenv("FLOW_APP_SECRET")
+val OAUTH_APP_SECRET = System.getenv("FLOW_APP_SECRET") ?: ""
 
 data class IncomingUpdateAction(
         @JsonProperty("@type") val type: String,

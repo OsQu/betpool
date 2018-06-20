@@ -50,7 +50,7 @@ class FlowdockInfo(private val actionUrl: String, val betpool: Betpool) {
     }
 
     private fun betpoolIntToString(value: Int): String {
-        return (value.toFloat() / 100).toString()
+        return (BET_SIZE.toFloat() * value.toFloat() / 100f).toString() + "€"
     }
 
     private fun winningsToString(winnings: Winnings): String {
@@ -145,7 +145,7 @@ class FlowdockInfo(private val actionUrl: String, val betpool: Betpool) {
     private fun getCurrentWinningsForFlowdock(): Map<String, String> {
         return betpool.getWinnings()
                 .mapKeys { betpool.playerNames[it.key]!! }
-                .mapValues { (it.value.toFloat() / 100f).toString() }
+                .mapValues { betpoolIntToString(it.value) }
     }
 
     private fun getMatchThread(matchId: String): flowdock.model.Thread {
