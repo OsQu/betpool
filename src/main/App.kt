@@ -21,6 +21,7 @@ val FLOW_TOKENS = setOf(System.getenv("FLOW_TOKEN_1") ?: "", System.getenv("FLOW
 val WEB_URL = System.getenv("WEB_URL") ?: ""
 val persistence = Persistence(System.getenv("LOG_FILE") ?: "/tmp/production.log")
 val BET_SIZE = Integer.parseInt(System.getenv("BET_SIZE") ?: "10")
+val scheduledExecutorPool = ScheduledThreadPoolExecutor(1)
 
 object State {
     val betpool = Betpool()
@@ -72,6 +73,9 @@ class App : Kooby({
         applyAction(Action.WithdrawBet(playerId = action.agent.url, matchId = req.param("matchId").value()))
         ""
     }
+    get("/queue") {
+        "Active: ${scheduledExecutorPool.activeCount}, tasks completed: ${scheduledExecutorPool.taskCount}, queue: ${scheduledExecutorPool.queue.size}"
+    }
 })
 
 fun applyAction(action: Action) {
@@ -84,7 +88,7 @@ fun applyAction(action: Action) {
 
 fun main(args: Array<String>) {
     State.betpool.applyActions(persistence.readActions())
-    val scheduledExecutorPool = ScheduledThreadPoolExecutor(1)
+    scheduledExecutorPool.removeOnCancelPolicy = true
     scheduledExecutorPool.scheduleAtFixedRate(::scheduledUpdate, 0, UPDATE_RATE, UPDATE_TYPE)
     scheduledExecutorPool.scheduleAtFixedRate(::fetchMatchWinners, 0, 5L, UPDATE_TYPE)
     run(::App, args)
