@@ -95,18 +95,26 @@ fun main(args: Array<String>) {
 }
 
 fun scheduledUpdate() {
-    updateStartedMatches()
-    updateFromMarketData()
+    try {
+        updateStartedMatches()
+        updateFromMarketData()
+    } catch(e: Exception) {
+        println("ScheduledUpdate exception: ${e.message}")
+    }
 }
 
 fun fetchMatchWinners() {
-    val inProgressMatchIds = State.betpool.getMatches()
+    try {
+        val inProgressMatchIds = State.betpool.getMatches()
             .filter { it.value.isStarted() && !it.value.hasEnded() }
             .map { it.key }
-    MarketsAPI.fetchWinners(inProgressMatchIds).forEach {
-        if (it.winner != null) {
-            applyAction(Action.MatchEnd(matchId = it.marketId, winner = it.winner))
+        MarketsAPI.fetchWinners(inProgressMatchIds).forEach {
+            if (it.winner != null) {
+                applyAction(Action.MatchEnd(matchId = it.marketId, winner = it.winner))
+            }
         }
+    } catch(e: Exception) {
+        println("fetchMatchWinners exception: ${e.message}")
     }
 }
 
