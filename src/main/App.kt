@@ -98,7 +98,7 @@ fun scheduledUpdate() {
     try {
         updateStartedMatches()
         updateFromMarketData()
-    } catch(e: Exception) {
+    } catch(e: Throwable) {
         println("ScheduledUpdate exception: ${e.message}")
     }
 }
@@ -113,7 +113,7 @@ fun fetchMatchWinners() {
                 applyAction(Action.MatchEnd(matchId = it.marketId, winner = it.winner))
             }
         }
-    } catch(e: Exception) {
+    } catch(e: Throwable) {
         println("fetchMatchWinners exception: ${e.message}")
     }
 }
