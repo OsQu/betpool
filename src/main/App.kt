@@ -76,6 +76,9 @@ class App : Kooby({
     get("/queue") {
         "Active: ${scheduledExecutorPool.activeCount}, tasks completed: ${scheduledExecutorPool.taskCount}, queue: ${scheduledExecutorPool.queue.size}"
     }
+    get("/log") {
+        persistence.readActions()
+    }
 })
 
 fun applyAction(action: Action) {
