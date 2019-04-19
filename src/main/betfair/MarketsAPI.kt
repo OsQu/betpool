@@ -3,7 +3,7 @@ package betfair
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.jackson.responseObject
 
-const val URL = "http://139.59.150.87:4567"
+const val URL = "http://134.209.251.131:4567"
 
 object MarketsAPI {
     fun fetch(): List<Market> {
