@@ -64,7 +64,7 @@ class FlowdockInfo(private val actionUrl: String, val betpool: Betpool) {
                 title = "Winnings dealt from match ${match.matchName}",
                 body = body,
                 author = Author(name = "Betpool"),
-                external_thread_id = "main",
+                external_thread_id = "main_snooker_2019",
                 thread = getMainThread()
         )
     }
@@ -104,8 +104,8 @@ class FlowdockInfo(private val actionUrl: String, val betpool: Betpool) {
 
     private fun getThreadId(action: Action): String {
         return when(action) {
-            is Action.PlayerJoin -> "main"
-            is Action.PlayerQuit -> "main"
+            is Action.PlayerJoin -> "main_snooker_2019"
+            is Action.PlayerQuit -> "main_snooker_2019"
             is Action.Bet -> action.matchId
             is Action.WithdrawBet -> action.matchId
             is Action.MatchNew -> action.matchId
