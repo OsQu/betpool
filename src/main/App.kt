@@ -46,7 +46,7 @@ class App : Kooby({
     }
     post("start") {
         val activity = Activity(
-                title = "Betpool started for World cup 2018!",
+                title = "Betpool started for Snooker WCH 2019!",
                 author = Author(name = "Betpool"),
                 thread = FlowdockInfo(WEB_URL, State.betpool).getMainThread(),
                 external_thread_id = "main"
