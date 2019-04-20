@@ -49,7 +49,7 @@ class App : Kooby({
                 title = "Betpool started for Snooker WCH 2019!",
                 author = Author(name = "Betpool"),
                 thread = FlowdockInfo(WEB_URL, State.betpool).getMainThread(),
-                external_thread_id = "main"
+                external_thread_id = "main_snooker_2019"
         )
         FlowdockAPI(FLOW_TOKENS).createActivity(activity)
     }
