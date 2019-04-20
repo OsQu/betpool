@@ -26,7 +26,7 @@ class FlowdockInfo(private val actionUrl: String, val betpool: Betpool) {
 
     fun getMainThread(): flowdock.model.Thread {
         return flowdock.model.Thread(
-                title = "World cup 2018",
+                title = "Snooker WCH 2019",
                 body = "Pool for next matches: ${getPoolNames(betpool.getCurrentPlayers())}",
                 fields = getCurrentWinningsForFlowdock().map { Field(label = it.key, value = it.value) },
                 external_url = "$actionUrl/state",
