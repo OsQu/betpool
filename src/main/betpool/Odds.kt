@@ -3,11 +3,13 @@ package betpool
 import kotlin.math.floor
 
 data class Competitor(val name: String, val odds: Int)
-// Todo: odds cannot be 0
 
 data class Odds(private var odds: Map<String, Competitor>) {
     init {
-        odds = Odds.scaleOdds(odds)
+        if (odds.values.any { competitor -> competitor.odds < 100 }) {
+            throw IllegalArgumentException("Odds cannot be less than 1")
+        }
+        odds = scaleOdds(odds)
     }
     companion object {
         private fun scaleOdds(initialOdds: Map<String, Competitor>): Map<String, Competitor> {

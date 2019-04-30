@@ -132,6 +132,7 @@ fun updateStartedMatches() {
 fun updateFromMarketData() {
     MarketsAPI.fetch()
             .filter { it.startTime < Instant.now().plus(Duration.ofHours(24)) }
+            .filter { it.odds.values.all { runner -> runner.odds >= 1 } }
             .filter { !State.betpool.getMatches().containsKey(it.marketId) }
             .forEach { applyAction(createNewMatchActionFromMarketEvent(it)) }
 }
